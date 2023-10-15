@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // output: 'export', // デプロイ時のみコメントを外す
+    output: 'export', // デプロイ時のみコメントを外す
     images: {
         domains: [
             'placehold.jp',
