@@ -29,13 +29,13 @@ export function MenuTile() {
                     </h2>
                 </div>
                 <Image
-                    src="https://placehold.jp/150x150.png"
-                    alt="Vercel Logo"
-                    className="dark:invert"
-                    height={120}
-                    width={120}
-                    priority
-                />
+                    className="ml-3 rounded-md"
+                    src={'https://placehold.jp/120x100.png'}
+                    alt=""
+                    height={100}
+                    width={100}
+                    objectFit='cover'
+                ></Image>
             </button>
         </li>
     );
