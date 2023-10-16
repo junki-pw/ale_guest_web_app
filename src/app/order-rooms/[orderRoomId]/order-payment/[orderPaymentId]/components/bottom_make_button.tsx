@@ -66,7 +66,7 @@ export default function BottomMakeButton({ orderPaymentId }: Props) {
 
     return (
         <button
-            className="fixed bottom-3 left-4 right-4 w-full py-3 bg-orange-400 rounded-md font-bold text-white my-3"
+            className="fixed bottom-3 px-4 w-full py-3 bg-orange-400 rounded-md font-bold text-white"
             onClick={handleMakePayment}
         >
             お支払いを確定する
