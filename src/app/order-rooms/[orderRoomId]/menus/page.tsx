@@ -13,17 +13,15 @@ export default function MenusPage() {
 
     return (
         <main>
-            menus
-            {/* {list.map((fruit) =>
-                <div>
-                    <CategoryTile
-                        key={uuidv4()}
-                    />
-                    {arr.map((e) => <MenuTile
-                        key={uuidv4()}
-                    />)}
+            {list.map((fruit) =>
+                <div key={uuidv4()}>
+                    {/* カテゴリー */}
+                    <CategoryTile key={uuidv4()} />
+
+                    {/* メニュータイル */}
+                    {arr.map((e) => <MenuTile key={uuidv4()} />)}
                 </div>
-            )} */}
+            )}
         </main>
     )
 }

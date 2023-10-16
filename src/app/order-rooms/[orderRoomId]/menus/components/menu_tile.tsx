@@ -11,9 +11,7 @@ export function MenuTile() {
     };
 
     return (
-        <li
-            className="list-none"
-        >
+        <li className="list-none">
             <button
                 className='flex h-auto px-4 py-3 border-l-4 border-gray-300 rounded text-left bg-white'
                 onClick={redirectToGoogle}
