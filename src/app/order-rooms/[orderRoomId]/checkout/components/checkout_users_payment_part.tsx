@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useWindowSize } from "../../menus/[menuId]/page";
 import Link from "next/link";
 
 export default function CheckoutUsersPaymentPart() {

@@ -38,7 +38,7 @@ export default function MenuDetailsPage() {
     )
 }
 
-export const useWindowSize = (): number[] => {
+const useWindowSize = (): number[] => {
     const [size, setSize] = useState([0, 0]);
     useLayoutEffect(() => {
         const updateSize = (): void => {
