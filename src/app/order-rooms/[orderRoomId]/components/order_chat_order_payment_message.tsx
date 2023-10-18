@@ -3,7 +3,7 @@ import PrimaryChatSenderInfo from "./message_type/sub/primary_chat_sender_info";
 
 export default function OrderChatOrderPaymentMessage() {
     return (
-        <PrimaryChatSenderInfo children={
+        <PrimaryChatSenderInfo>
             <div className="flex flex-col items-start">
                 <button className="bg-orange-500 px-4 py-3 rounded-lg w-min">
                     <div className="text-white">
@@ -17,6 +17,6 @@ export default function OrderChatOrderPaymentMessage() {
                 <div className="h-1"></div>
                 <button className="p-3 bg-orange-500 rounded-lg text-white text-xs">各ユーザーのお会計情報はこちら</button>
             </div>
-        } />
+        </PrimaryChatSenderInfo>
     )
 }

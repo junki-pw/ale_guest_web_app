@@ -4,7 +4,7 @@ import PrimaryChatText from './message_type/sub/primary_chat_text'
 
 export default function OrderChatCheckoutMessage() {
     return (
-        <PrimaryChatSenderInfo children={
+        <PrimaryChatSenderInfo>
             <div>
                 <PrimaryChatText message={
                     '全員のお会計が完了しました。'
@@ -25,6 +25,6 @@ export default function OrderChatCheckoutMessage() {
                     <button className="p-3 bg-orange-500 rounded-lg text-white text-xs">各ユーザーのお会計情報はこちら</button>
                 </div>
             </div>
-        } />
+        </PrimaryChatSenderInfo>
     )
 }

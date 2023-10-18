@@ -4,6 +4,7 @@ import OrderChatFirstMessage from "./components/message_type/order_chat_first_me
 import OrderChatTextMessage from "./components/order_chat_text_message";
 import OrderChatCheckoutMessage from "./components/order_chat_checkout_message";
 import OrderChatOrderPaymentMessage from "./components/order_chat_order_payment_message";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function OrderRoomPage() {
     const orderChats: OrderChat[] = [
@@ -32,7 +33,7 @@ export default function OrderRoomPage() {
     return (
         <main className="h-full">
             <div className="grow flex flex-col">
-                {orderChats.map((event) => <ChatTiles orderChat={event} />)}
+                {orderChats.map((event) => <ChatTiles key={uuidv4()} orderChat={event} />)}
             </div>
         </main >
     );
@@ -45,17 +46,17 @@ export interface OrderChatProps {
 function ChatTiles({ orderChat }: OrderChatProps) {
 
     if (orderChat.messageType == 'join') {
-        return <OrderChatJoinTile />;
+        return <OrderChatJoinTile key={uuidv4()} />;
     }
 
     switch (orderChat.messageType) {
         case 'first':
-            return <OrderChatFirstMessage />;
+            return <OrderChatFirstMessage key={uuidv4()} />;
         case 'text':
-            return <OrderChatTextMessage />;
+            return <OrderChatTextMessage key={uuidv4()} />;
         case 'orderPayment':
-            return <OrderChatOrderPaymentMessage />;
+            return <OrderChatOrderPaymentMessage key={uuidv4()} />;
         case 'checkout':
-            return <OrderChatCheckoutMessage />;
+            return <OrderChatCheckoutMessage key={uuidv4()} />;
     }
 }

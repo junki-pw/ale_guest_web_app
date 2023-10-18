@@ -4,6 +4,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import PrimaryChatSenderInfo from './sub/primary_chat_sender_info';
 import PrimaryChatText from './sub/primary_chat_text';
 import copy from "clipboard-copy"
+import { v4 as uuidv4 } from 'uuid';
 
 export default function OrderChatFirstMessage() {
     const handleCopy = () => {
@@ -13,7 +14,7 @@ export default function OrderChatFirstMessage() {
     }
 
     return (
-        <PrimaryChatSenderInfo children={
+        <PrimaryChatSenderInfo>
             <div>
                 <PrimaryChatText message={
                     "オーダーグループが作成されました。"
@@ -46,6 +47,6 @@ export default function OrderChatFirstMessage() {
                     招待リンクをコピー
                 </button>
             </div>
-        } />
+        </PrimaryChatSenderInfo>
     );
 }

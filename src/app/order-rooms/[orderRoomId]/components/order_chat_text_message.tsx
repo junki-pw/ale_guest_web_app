@@ -4,10 +4,8 @@ import PrimaryChatText from './message_type/sub/primary_chat_text'
 
 export default function OrderChatTextMessage() {
     return (
-        <PrimaryChatSenderInfo
-            children={
-                <PrimaryChatText message={'テキスト'} />
-            }
-        />
+        <PrimaryChatSenderInfo>
+            <PrimaryChatText message={'テキスト'} />
+        </PrimaryChatSenderInfo>
     )
 }
