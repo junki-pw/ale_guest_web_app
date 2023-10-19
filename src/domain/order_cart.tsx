@@ -1,3 +1,3 @@
 export interface OrderCart {
-    imageUrl: string | null | undefined,
+  imageUrl: string | null | undefined;
 }

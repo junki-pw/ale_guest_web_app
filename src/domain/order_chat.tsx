@@ -1,4 +1,4 @@
 export interface OrderChat {
-    messageType: string
-    message: string | null
+  messageType: string;
+  message: string | null;
 }

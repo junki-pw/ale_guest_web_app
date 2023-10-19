@@ -1,5 +1,5 @@
 export interface Payer {
-    payerId: string
-    status: string
-    amount: number
+  payerId: string;
+  status: string;
+  amount: number;
 }
