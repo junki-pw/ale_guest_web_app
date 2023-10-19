@@ -26,8 +26,7 @@ export default function Page() {
       </header>
 
       <nav className="flex flex-col justify-center items-center ">
-        <div className=" bg-gray-600 rounded-full h-40 w-40 mt-10 mb-6 flex justify-center "></div>
-
+        <Image src={"https://placehold.jp/150x150.png"} alt={"shop_icon_url"} width={72} height={72} className="my-2"></Image>
         <div className="font-bold text-2xl text-gray-800 mb-2">
           ガンジャバンギラス
         </div>
