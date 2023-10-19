@@ -2,9 +2,9 @@ import { auth } from "@/providers/firebase";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-let _initialRedirect = true;
-let _initialPath;
-let isInitialUrlGone = false;
+let _initialRedirect: boolean = true;
+let _initialPath: string | null = null;
+let isInitialUrlGone: boolean = false;
 
 const notLoginUserAvailablePagePaths = ["/login", "/"];
 
@@ -24,6 +24,9 @@ export async function middleware(req: NextRequest) {
 
   if (firebaseUser == undefined) {
     console.log("未認証ページに遷移");
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("firebaseUser2: " + auth.currentUser?.uid);
 
     if (notLoginUserAvailablePagePaths.indexOf(pathName) != -1) {
       return;
