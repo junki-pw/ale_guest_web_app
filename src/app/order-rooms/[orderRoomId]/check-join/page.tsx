@@ -124,13 +124,40 @@ export default function Page() {
         <div className="pb-2 pt-8  font-bold text-gray-600 text-xl">
           参加メンバー5人
         </div>
-        <div className="flex">
+
+        <div className="flex mt-2">
           <Image
             src={"https://placehold.jp/150x150.png"}
             alt={"shop_icon_url"}
             width={36}
             height={36}
-            className="my-6 rounded-full"
+            className="rounded-full"
+          ></Image>
+          <div className="font-bold my-auto mx-4 text-gray-800">
+            ユーザー名ユーザー名ユーザー名ユーザー名
+          </div>
+        </div>
+
+        <div className="flex mt-2">
+          <Image
+            src={"https://placehold.jp/150x150.png"}
+            alt={"shop_icon_url"}
+            width={36}
+            height={36}
+            className="rounded-full"
+          ></Image>
+          <div className="font-bold my-auto mx-4 text-gray-800">
+            ユーザー名ユーザー名ユーザー名ユーザー名
+          </div>
+        </div>
+
+        <div className="flex mt-2">
+          <Image
+            src={"https://placehold.jp/150x150.png"}
+            alt={"shop_icon_url"}
+            width={36}
+            height={36}
+            className="rounded-full"
           ></Image>
           <div className="font-bold my-auto mx-4 text-gray-800">
             ユーザー名ユーザー名ユーザー名ユーザー名
@@ -142,54 +169,32 @@ export default function Page() {
             alt={"shop_icon_url"}
             width={36}
             height={36}
-            className="my-6 rounded-full"
+            className="rounded-full"
           ></Image>
           <div className="font-bold my-auto mx-4 text-gray-800">
             ユーザー名ユーザー名ユーザー名ユーザー名
           </div>
         </div>
-        <div className="flex mt-1">
+
+        <div className="flex mt-2">
           <Image
             src={"https://placehold.jp/150x150.png"}
             alt={"shop_icon_url"}
             width={36}
             height={36}
-            className="my-6 rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
-        </div>
-        <div className="flex mt-1">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="my-6 rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
-        </div>
-        <div className="flex mt-1">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="my-6 rounded-full"
+            className="rounded-full"
           ></Image>
           <div className="font-bold my-auto mx-4 text-gray-800">
             ユーザー名ユーザー名ユーザー名ユーザー名
           </div>
         </div>
       </div>
-      <footer className="mt-14 mb-10 flex ">
-        <button className="text-white bg-gray-800 px-8 py-5 font-bold  rounded-lg self-center hover:bg-gray-700 mx-6">
+      <div className="py-10"></div>
+      <footer className="flex justify-evenly fixed bottom-0  left-0 bg-white p-4 w-full">
+        <button className="text-white bg-gray-800 px-6 py-3 font-bold  rounded-lg self-center hover:bg-gray-700 ">
           参加しない
         </button>
-        <button className="text-white bg-orange-500 px-16 py-5 font-bold  rounded-lg self-center hover:bg-orange-400 mx-6">
+        <button className="text-white bg-orange-500 px-6 py-3 font-bold  rounded-lg self-center hover:bg-orange-400 ">
           新しいプロフィールで参加
         </button>
       </footer>
