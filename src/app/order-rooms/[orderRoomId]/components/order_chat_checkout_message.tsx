@@ -1,10 +1,23 @@
 import React from "react";
 import PrimaryChatSenderInfo from "./message_type/sub/primary_chat_sender_info";
 import PrimaryChatText from "./message_type/sub/primary_chat_text";
+import { useRouter } from "next/navigation";
+import { OrderPaymentMessageProps } from "./order_chat_order_payment_message";
 
-export default function OrderChatCheckoutMessage() {
+export default function OrderChatCheckoutMessage({
+  orderChat,
+  orderRoomId,
+  orderPaymentId,
+}: OrderPaymentMessageProps) {
+  const router = useRouter();
+  const handleGoToPaymentStatusPage = () => {
+    router.push(
+      `/order-rooms/${orderRoomId}/order-payment/${orderPaymentId}/status`
+    );
+  };
+
   return (
-    <PrimaryChatSenderInfo>
+    <PrimaryChatSenderInfo orderChat={orderChat}>
       <div>
         <PrimaryChatText
           message={
@@ -24,7 +37,10 @@ export default function OrderChatCheckoutMessage() {
             </div>
           </button>
           <div className="h-1"></div>
-          <button className="p-3 bg-orange-500 rounded-lg text-white text-xs">
+          <button
+            className="p-3 bg-orange-500 rounded-lg text-white text-xs"
+            onClick={handleGoToPaymentStatusPage}
+          >
             各ユーザーのお会計情報はこちら
           </button>
         </div>

@@ -5,8 +5,9 @@ import PrimaryChatSenderInfo from "./sub/primary_chat_sender_info";
 import PrimaryChatText from "./sub/primary_chat_text";
 import copy from "clipboard-copy";
 import { v4 as uuidv4 } from "uuid";
+import { OrderChatProps } from "../../page";
 
-export default function OrderChatFirstMessage() {
+export default function OrderChatFirstMessage({ orderChat }: OrderChatProps) {
   const handleCopy = () => {
     copy("https://google.com/").then(() => {
       alert("リンクをコピーしました");
@@ -14,7 +15,7 @@ export default function OrderChatFirstMessage() {
   };
 
   return (
-    <PrimaryChatSenderInfo>
+    <PrimaryChatSenderInfo orderChat={orderChat}>
       <div>
         <PrimaryChatText
           message={

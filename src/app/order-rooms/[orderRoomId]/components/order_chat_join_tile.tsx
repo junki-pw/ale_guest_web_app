@@ -1,9 +1,17 @@
-export default function OrderChatJoinTile() {
+import { OrderChatProps } from "../page";
+
+export default function OrderChatJoinTile({ orderChat }: OrderChatProps) {
+  const createdAt: Date = orderChat.createdAt ?? new Date();
+  const month: number = createdAt.getMonth();
+  const day: number = createdAt.getDay();
+  const hour: number = createdAt.getHours();
+  const minutes: number = createdAt.getMinutes();
+
   return (
     <div className="mb-4 py-1 px-2 text-center text-xs text-gray-400 bg-gray-50 mx-4 rounded-md">
-      12月30日 11:30
+      {month}月{day}日 {hour}:{minutes}
       <br />
-      〇〇さんが参加しました
+      {orderChat.senderName}さんが参加しました
     </div>
   );
 }
