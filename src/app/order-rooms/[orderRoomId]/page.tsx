@@ -6,9 +6,10 @@ import OrderChatTextMessage from "./components/order_chat_text_message";
 import OrderChatCheckoutMessage from "./components/order_chat_checkout_message";
 import OrderChatOrderPaymentMessage from "./components/order_chat_order_payment_message";
 import { v4 as uuidv4 } from "uuid";
-import useSWR from "swr";
-import { orderRoomFetcher } from "./order_room_fetcher";
-import { OrderRoomState } from "./state";
+import { orderRoomSelector } from "./test";
+import React, { Suspense } from "react";
+import { useRecoilValue } from "recoil";
+import { ErrorBoundary } from "react-error-boundary";
 
 interface OrderRoomPageProps {
   params: {
@@ -19,23 +20,18 @@ interface OrderRoomPageProps {
 export default function OrderRoomPage({
   params: { orderRoomId },
 }: OrderRoomPageProps) {
-  const { data, error, isLoading } = useSWR<OrderRoomState>(
-    "order_room/orderRoomId",
-    () => orderRoomFetcher(orderRoomId)
-  );
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  } else if (error) {
-    return <div>Error...</div>;
-  }
+  const data = useRecoilValue(orderRoomSelector(orderRoomId));
 
   return (
     <main className="h-full">
       <div className="grow flex flex-col">
-        {data!.orderChats.map((event) => (
-          <ChatTiles key={uuidv4()} orderChat={event} />
-        ))}
+        <Suspense fallback={<div>Loading...</div>}>
+          <ErrorBoundary fallback={<div>Error...</div>}>
+            {data.orderChats.map((event) => (
+              <ChatTiles key={uuidv4()} orderChat={event} />
+            ))}
+          </ErrorBoundary>
+        </Suspense>
       </div>
     </main>
   );
