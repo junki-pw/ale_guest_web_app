@@ -21,6 +21,7 @@ const InitialProvider = ({ children }: { children: React.ReactNode }) => {
   const { isLoading, error } = useSWR("initial", initialFetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
+    shouldRetryOnError: false,
   });
 
   if (isLoading) {
@@ -38,6 +39,7 @@ const InitialProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         revalidateIfStale: false,
         revalidateOnFocus: false,
+        shouldRetryOnError: false,
       }}
     >
       {children}
