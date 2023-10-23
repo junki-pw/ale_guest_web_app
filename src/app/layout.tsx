@@ -1,5 +1,5 @@
 import RecoilProvider from "@/providers/recoil";
-import InitialAuthProvider from "@/providers/initial";
+import InitialProvider from "@/providers/initial";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <RecoilProvider>
         <body className={inter.className}>
-          <InitialAuthProvider>{children}</InitialAuthProvider>
+          <InitialProvider>{children}</InitialProvider>
         </body>
       </RecoilProvider>
     </html>
