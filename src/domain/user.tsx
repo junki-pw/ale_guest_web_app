@@ -9,7 +9,7 @@ export interface AppUser {
   followerCount: number;
   followingCount: number;
   isStaff: boolean;
-  updatedAt: FieldValue | Date | null;
+  updatedAt: Date | FieldValue | null;
 }
 
 export const appUserFromJson = (data: DocumentData): AppUser => {
