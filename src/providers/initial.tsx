@@ -18,7 +18,10 @@ const initialFetcher = async () => {
 };
 
 const InitialProvider = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading, error } = useSWR("initial", initialFetcher);
+  const { isLoading, error } = useSWR("initial", initialFetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  });
 
   if (isLoading) {
     return (
