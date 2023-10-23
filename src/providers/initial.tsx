@@ -3,12 +3,14 @@
 import useSWR from "swr";
 import { auth } from "./firebase";
 import { insertUserInfo } from "@/api/insertUserInfo";
+import { signInAnonymously } from "firebase/auth";
 
 const initialFetcher = async () => {
   await auth.authStateReady();
   const userId = auth.currentUser?.uid;
   if (userId == undefined) {
-    return;
+    // 認証ていない場合は匿名認証を実行する
+    await signInAnonymously(auth);
   }
 
   // user データを取得して、データが無い場合は新規作成
