@@ -1,6 +1,6 @@
 import { DocumentData, FieldValue } from "firebase/firestore";
 
-export interface ShopCategory {
+export interface MenuCategory {
   categoryId: string;
   categoryName: string;
   categoryCommonName: string;
@@ -14,7 +14,7 @@ export interface ShopCategory {
   updatedAt: Date | FieldValue | null;
 }
 
-export const shopCategoryFromJson = (data: DocumentData): ShopCategory => {
+export const shopCategoryFromJson = (data: DocumentData): MenuCategory => {
   return {
     categoryId: data.categoryId,
     categoryName: data.categoryName,
