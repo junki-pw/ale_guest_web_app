@@ -1,3 +1,193 @@
+import { MenuCategory } from "@/domain/menu_category";
+import { ShopMenu } from "@/domain/shop_menu";
+import { MenuOption } from "@/domain/shop_option";
+import { menuNoImageUrl, noImageUrl } from "./urls";
+import { ShopStaff } from "@/domain/shop_staff";
+import { ShopSeat } from "@/domain/shop_seat";
+import { OrderCart } from "@/domain/order_cart";
+import { OrderRoomUser } from "@/domain/order_room_user";
+import { OrderRoom } from "@/domain/order_room";
+
 export const doc_not_found = "doc_not_found";
 export const order_room_closed = "order_room_closed";
 export const user_not_joined = "user_not_joined";
+
+export const errorCategory: MenuCategory = {
+  categoryId: "categoryId",
+  categoryName: "データが存在しないため表示不可",
+  categoryCommonName: "データが存在しないため表示不可",
+  categoryDescription: "データが存在しないため表示不可",
+  isAlwaysVisible: true,
+  serveTime: {},
+  categoryIndex: 10000,
+  isActive: true,
+  menuIds: [],
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorMenu: ShopMenu = {
+  menuId: "menuId",
+  menuCommonName: "データが存在しないため表示不可",
+  menuDescription: "データが存在しないため表示不可",
+  menuGenre: "cooking",
+  menuName: "データが存在しないため表示不可",
+  menuType: "single",
+  price: 0,
+  categoryIds: [],
+  optionIds: [],
+  soldOutType: "onSale",
+  defaultMenuCount: 20,
+  durationOfStayMinutes: 120,
+  lastOrderTimeMinutes: 30,
+  todayOrderedCount: 0,
+  isActive: true,
+  isHidden: false,
+  isLimited: false,
+  isSetPlan: true,
+  isUnLimitedPlan: false,
+  planMenuIds: [],
+  unLimitedMenuIds: [],
+  menuImageUrl: menuNoImageUrl,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorStaff: ShopStaff = {
+  staffId: "staffId",
+  staffName: "データが存在しないため表示不可",
+  staffIcon: noImageUrl,
+  staffPosition: "データが存在しないため表示不可",
+  bio: "",
+  isActive: true,
+  isHidden: false,
+  onWorking: false,
+  userId: null,
+  linkRedirectUrlId: null,
+  timeCardId: null,
+  linkedAt: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorSeat: ShopSeat = {
+  seatId: "seatId",
+  seatName: "データが存在しないため表示不可",
+  seatCommonName: "データが存在しないため表示不可",
+  seatDescription: "データが存在しないため表示不可",
+  seatType: "table",
+  seatGenre: "open",
+  maxPeopleCount: 10,
+  minimumPeopleCount: 5,
+  seatImageUrls: [],
+  isActive: true,
+  isHidden: false,
+  coverChargeId: null,
+  orderRoomId: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorOption: MenuOption = {
+  optionId: "optionId",
+  optionName: "データが存在しないため表示不可",
+  optionDescription: "データが存在しないため表示不可",
+  maxSelectCount: 1,
+  isRequiredOption: false,
+  defaultMenuIds: [],
+  menus: {},
+  isActive: true,
+  optionMenuIds: [],
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorOrderCart: OrderCart = {
+  orderCartId: "orderCartId",
+  orderRoomId: "orderRoomId",
+  shopId: "shopId",
+  userIds: [],
+  options: {},
+  serveStatus: "preparing",
+  orderCartNumber: 0,
+  unLimitedPlanExtraCharge: 0,
+  unLimitedPlanExtraTime: 0,
+  isDeleted: false,
+  isReducedTaxRate: false,
+  orderedFromGuest: true,
+  corrects: [],
+  servedPlanMenuIds: [],
+  courseMenuOptions: {},
+  planMenusServeStatus: {},
+  userId: null,
+  userIcon: null,
+  userName: null,
+  customMenuMemo: null,
+  customMenuName: null,
+  customMenuGenre: null,
+  orderId: null,
+  deleteUserId: null,
+  deleteUserName: null,
+  deleteUserIcon: null,
+  menuId: null,
+  customMenuPrice: null,
+  orderedMenuAmount: null,
+  unLimitedPlanStartAt: null,
+  deletedAt: null,
+  orderAt: null,
+  servedAt: null,
+  printedAt: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorOrderRoomUser: OrderRoomUser = {
+  userId: "userId",
+  userName: "データが存在しないため表示不可",
+  userIcon: noImageUrl,
+  unReadCount: 0,
+  isActive: true,
+  invitedUserId: null,
+  invitedUserIcon: null,
+  invitedUserName: null,
+  inviteStatus: null,
+  joinedAt: null,
+  rejectedAt: null,
+  leftAt: null,
+  lastReadAt: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const errorOrderRoom: OrderRoom = {
+  orderRoomId: "orderRoomId",
+  orderRoomName: "データが存在しないため表示不可",
+  orderRoomUrl: "orderRoomUrl",
+  seatId: "seatId",
+  shopId: "shopId",
+  shopName: "データが存在しないため表示不可",
+  shopIcon: noImageUrl,
+  orderRoomNumber: 10000,
+  menCount: 1,
+  womenCount: 1,
+  teenCount: 0,
+  orderRoomImageUrl: noImageUrl,
+  orderCartCount: 0,
+  isClosed: false,
+  isDeleted: false,
+  onOrder: true,
+  corrects: [],
+  userIds: [],
+  courses: {},
+  unLimitedPlans: {},
+  coverChargeId: null,
+  hostId: null,
+  lastMessage: null,
+  lastMessageType: null,
+  orderPaymentId: null,
+  reservationId: null,
+  closedAt: null,
+  deletedAt: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
