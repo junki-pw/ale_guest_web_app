@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-export default function Page() {
+export default function CheckJoinPage() {
   return (
     <main className="">
       <nav className="flex flex-col justify-center items-center ">

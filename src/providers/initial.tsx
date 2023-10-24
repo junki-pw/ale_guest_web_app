@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { auth } from "./firebase";
 import { insertUserInfo } from "@/api/insertUserInfo";
 import { signInAnonymously } from "firebase/auth";
@@ -17,8 +17,12 @@ const initialFetcher = async () => {
   await insertUserInfo();
 };
 
-const InitialAuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading, error } = useSWR("initial", initialFetcher);
+const InitialProvider = ({ children }: { children: React.ReactNode }) => {
+  const { isLoading, error } = useSWR("initial", initialFetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
 
   if (isLoading) {
     return (
@@ -30,7 +34,17 @@ const InitialAuthProvider = ({ children }: { children: React.ReactNode }) => {
     return <div>{error}</div>;
   }
 
-  return <div>{children}</div>;
+  return (
+    <SWRConfig
+      value={{
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        shouldRetryOnError: false,
+      }}
+    >
+      {children}
+    </SWRConfig>
+  );
 };
 
-export default InitialAuthProvider;
+export default InitialProvider;

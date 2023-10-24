@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCamera } from "@fortawesome/free-solid-svg-icons";
 
-export default function Page() {
+export default function EditProfilePage() {
   return (
     <main className="">
       <nav className="flex flex-col justify-center items-center my-6">
@@ -25,7 +25,6 @@ export default function Page() {
           </div>
         </div>
 
-        
         <div className="w-80">
           <form action="" className=" text-center my-10">
             <input
