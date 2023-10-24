@@ -1,8 +1,27 @@
+"use client"
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import useSWR from "swr";
+import { checkJoinFetcher } from "./fetcher";
+import { CheckJoinState } from "./state";
 
-export default function CheckJoinPage() {
+interface CheckJoinPageProps {
+  params: { orderRoomId: string };
+}
+
+export default function CheckJoinPage(props: CheckJoinPageProps) {
+  const orderRoomId = props.params.orderRoomId;
+  const { data, isLoading, error } = useSWR<CheckJoinState>(
+    `order-rooms/${orderRoomId}/check-join`,
+    () => checkJoinFetcher(orderRoomId)
+  );
+  if (isLoading) {
+    return <div>Loading</div>;
+  } else if (error || data == undefined) {
+    return <div>error</div>;
+  }
+
   return (
     <main className="">
       <nav className="flex flex-col justify-center items-center ">
@@ -14,7 +33,7 @@ export default function CheckJoinPage() {
           className="my-6 rounded-full"
         ></Image>
         <div className="font-bold text-2xl text-gray-800 mb-2">
-          ガンジャバンギラス
+          {data.orderRoom.orderRoomName}
         </div>
         <div className="text-gray-600 mb-10 text-center font-bold">
           メンバー 3・オーダー済み 12
