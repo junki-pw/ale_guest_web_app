@@ -40,13 +40,7 @@ export interface OrderCart {
   updatedAt: Date | null;
 }
 
-export const orderCartFromJson = (
-  data: DocumentData | undefined
-): OrderCart | null => {
-  if (data == undefined) {
-    return null;
-  }
-
+export const orderCartFromJson = (data: DocumentData): OrderCart => {
   return {
     orderCartId: data.orderCartId,
     orderRoomId: data.orderRoomId,
