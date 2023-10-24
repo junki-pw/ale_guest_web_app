@@ -1,6 +1,6 @@
 import { DocumentData, FieldValue } from "firebase/firestore";
 
-export interface ShopOption {
+export interface MenuOption {
   optionId: string;
   optionName: string;
   optionDescription: string;
@@ -14,7 +14,7 @@ export interface ShopOption {
   updatedAt: Date | FieldValue | null;
 }
 
-export const shopOptionFromJson = (data: DocumentData): ShopOption => {
+export const menuOptionFromJson = (data: DocumentData): MenuOption => {
   return {
     optionId: data.optionId,
     optionName: data.optionName,

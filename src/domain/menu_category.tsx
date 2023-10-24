@@ -14,7 +14,7 @@ export interface MenuCategory {
   updatedAt: Date | FieldValue | null;
 }
 
-export const shopCategoryFromJson = (data: DocumentData): MenuCategory => {
+export const menuCategoryFromJson = (data: DocumentData): MenuCategory => {
   return {
     categoryId: data.categoryId,
     categoryName: data.categoryName,
