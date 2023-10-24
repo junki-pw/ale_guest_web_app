@@ -5,6 +5,8 @@ import { auth, db } from "@/providers/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import BottomMakeButton from "./components/bottom_make_button";
+import useSWR from "swr";
+import { orderPaymentFetcher } from "./fetcher";
 
 interface OrderPaymentArgs {
   params: {
@@ -15,34 +17,23 @@ interface OrderPaymentArgs {
 export default function OrderPaymentPage({
   params: { orderPaymentId },
 }: OrderPaymentArgs) {
-  const [payer, setPayer] = useState<Payer>();
+  const { data, isLoading, error } = useSWR(
+    `order-payments/${orderPaymentId}`,
+    orderPaymentFetcher
+  );
 
-  // 初期化処理
-  useEffect(() => {
-    const userId = auth.currentUser?.uid;
-    if (userId == null) {
-      alert("ログインされていません");
-      return;
-    }
-
-    // Payer を取得する
-    const docRef = doc(db, "order_payments", orderPaymentId, "payers", userId);
-    getDoc(docRef).then((value) => {
-      if (value.data() == null) {
-        alert("お支払い詳細を取得できませんでした");
-        return;
-      }
-
-      setPayer(value.data() as Payer);
-    });
-  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error が発生しました</div>;
+  }
 
   return (
     <main className="relative h-full py-6 px-4">
       {/* // 合計金額 */}
       <h1 className="text-lg font-bold ">合計金額</h1>
       <h2 className="my-1.5 text-3xl text-orange-500 font-bold">
-        ¥ {payer?.amount}
+        ¥ {data!.payer?.amount}
       </h2>
       <div className="h-[1px] w-full bg-gray-300"></div>
 
@@ -63,7 +54,7 @@ export default function OrderPaymentPage({
         スタッフの詳細を見れたり評価をしたり出来ます。
       </p>
 
-      <BottomMakeButton orderPaymentId="" />
+      <BottomMakeButton orderPaymentId={orderPaymentId} />
     </main>
   );
 }
