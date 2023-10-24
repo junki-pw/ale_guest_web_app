@@ -3,6 +3,7 @@ import { db } from "@/providers/firebase";
 import {
   Unsubscribe,
   collection,
+  getCountFromServer,
   onSnapshot,
   orderBy,
   query,
@@ -19,4 +20,16 @@ export const streamOrderCartsByOrderRoomId: (
   );
 
   return onSnapshot(q, (snapshot) => snapshot);
+};
+
+export const getOrderedCount: (orderRoomId: string) => Promise<number> = async (
+  orderRoomId: string
+) => {
+  const q = query(
+    collection(db, "order_carts"),
+    where("orderRoomId", "==", orderRoomId),
+    where("isActive", "==", true)
+  );
+
+  return await getCountFromServer(q).then((value) => value.data().count);
 };
