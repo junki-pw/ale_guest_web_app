@@ -7,7 +7,7 @@ import OrderChatCheckoutMessage from "./components/order_chat_checkout_message";
 import OrderChatOrderPaymentMessage from "./components/order_chat_order_payment_message";
 import { v4 as uuidv4 } from "uuid";
 import useSWR from "swr";
-import { orderRoomFetcher } from "./order_room_fetcher";
+import { orderRoomFetcher } from "./fetcher";
 import { OrderRoomState } from "./state";
 import CheckJoinPage from "./check-join/page";
 import { order_room_closed, user_not_joined } from "@/constants/error";
