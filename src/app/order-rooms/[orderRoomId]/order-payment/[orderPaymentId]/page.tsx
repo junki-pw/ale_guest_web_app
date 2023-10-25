@@ -19,7 +19,7 @@ export default function OrderPaymentPage({
 }: OrderPaymentArgs) {
   const { data, isLoading, error } = useSWR(
     `order-payments/${orderPaymentId}`,
-    orderPaymentFetcher
+    () => orderPaymentFetcher(orderPaymentId)
   );
 
   if (isLoading) {
