@@ -1,9 +1,14 @@
+import { MenuCategory } from "@/domain/menu_category";
 import React from "react";
 
-const CategoryTile = () => {
+interface CategoryTileProps {
+  category: MenuCategory;
+}
+
+const CategoryTile = ({ category }: CategoryTileProps) => {
   return (
     <h1 className="mx-4 mb-3 mt-4 font-bold line-clamp-1 text-xl">
-      カテゴリー名カテゴリー名カテゴリー名カテゴリー名カテゴリー名カテゴリー名
+      {category.categoryName}
     </h1>
   );
 };
