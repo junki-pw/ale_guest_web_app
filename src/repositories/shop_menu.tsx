@@ -9,7 +9,7 @@ import {
   QueryConstraint,
   collection,
   doc,
-  endBefore,
+  endAt,
   getDoc,
   getDocs,
   getDocsFromCache,
@@ -58,7 +58,7 @@ const getQuery: (
           where(isActive, "==", true),
           where(isHidden, "==", false),
         ])
-      : mainQuery(shopId, [endBefore([updatedAt])])
+      : mainQuery(shopId, [endAt(value.docs[0])])
   );
 };
 

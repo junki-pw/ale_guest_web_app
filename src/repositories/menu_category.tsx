@@ -11,7 +11,7 @@ import {
   Query,
   QueryConstraint,
   collection,
-  endBefore,
+  endAt,
   getDocs,
   getDocsFromCache,
   limit,
@@ -46,7 +46,7 @@ const getQuery: (
   return getDocsFromCache(q).then((value) =>
     value.docs.length == 0
       ? previousQuery([where(isActive, "==", true)])
-      : previousQuery([endBefore([updatedAt])])
+      : previousQuery([endAt(value.docs[0])])
   );
 };
 
