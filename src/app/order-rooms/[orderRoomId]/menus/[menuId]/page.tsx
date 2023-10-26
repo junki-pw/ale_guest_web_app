@@ -8,15 +8,15 @@ import useSWR from "swr";
 import { menuDetailsDetailsFetcher } from "./fetcher";
 
 interface MenuDetailsProps {
-  prams: {
+  params: {
     orderRoomId: string;
     menuId: string;
   };
 }
 
 export default function MenuDetailsPage(props: MenuDetailsProps) {
-  const orderRoomId = props.prams.orderRoomId;
-  const menuId = props.prams.menuId;
+  const orderRoomId = props.params.orderRoomId;
+  const menuId = props.params.menuId;
   const [width] = useWindowSize();
   const imageWidth = width - 32;
 
