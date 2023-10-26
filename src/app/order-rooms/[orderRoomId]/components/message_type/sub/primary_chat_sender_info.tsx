@@ -13,7 +13,7 @@ export default function PrimaryChatSenderInfo({
 }: LayoutProps) {
   const createdAt: Date = orderChat.createdAt ?? new Date();
   const month = createdAt.getMonth();
-  const day = createdAt.getDay();
+  const day = createdAt.getDate();
   const hour = createdAt.getHours();
   const minutes = createdAt.getMinutes();
 
