@@ -1,29 +1,23 @@
-import { OrderCart, orderCartFromJson } from "@/domain/order_cart";
-import { db } from "@/providers/firebase";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { OrderCart } from "@/domain/order_cart";
+import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 import { useEffect, useState } from "react";
 
 export const useMenusHooks = (orderRoomId: string) => {
   const [orderCarts, setOrderCarts] = useState<OrderCart[]>([]);
+  const [initial, setInitial] = useState(true);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "order_carts"),
-      where("orderRoomId", "==", orderRoomId),
-      orderBy("updatedAt", "desc")
-    );
+    console.log("useEffect");
 
-    return onSnapshot(q, (snapshot) => {
-      const orderCarts = snapshot.docs.map((e) => orderCartFromJson(e.data()));
-      setOrderCarts(orderCarts);
-    });
-  });
+    if (initial) {
+      setInitial(false);
+      streamOrderCartsByOrderRoomId(orderRoomId, (orderCarts) => {
+        setOrderCarts(orderCarts);
+        console.log("orderCarts: " + orderCarts.length);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { orderCarts };
 };

@@ -10,6 +10,10 @@ import { getCategories } from "@/repositories/menu_category";
 import { MenuOption } from "@/domain/shop_option";
 import { getOptions } from "@/repositories/menu_option";
 import { getCurrentDateTime } from "@/repositories/server_timestamp";
+import { NormalBH } from "@/domain/normal_bh";
+import { getTodayNormalBHs } from "@/repositories/normal_bh";
+import { HolidayBH } from "@/domain/holiday_bh";
+import { getTodayHolidayBHs } from "@/repositories/holiday_bh";
 
 export const menusFetcher: (
   orderRoomId: string
@@ -20,6 +24,8 @@ export const menusFetcher: (
   const categories: MenuCategory[] = await getCategories(shop.shopId);
   const options: MenuOption[] = await getOptions(shop.shopId);
   const currentDateTime: Date = await getCurrentDateTime();
+  const normalBHs: NormalBH[] = await getTodayNormalBHs(currentDateTime);
+  const holidayBHs: HolidayBH[] = await getTodayHolidayBHs(currentDateTime);
 
   return {
     orderRoom: orderRoom,
@@ -28,5 +34,9 @@ export const menusFetcher: (
     options: options,
     currentDateTime: currentDateTime,
     categories: categories,
+    normalBHs: normalBHs,
+    holidayBHs: holidayBHs,
+    orderCarts: [],
+    unLimitedPlanMenuOrderCarts: [],
   };
 };
