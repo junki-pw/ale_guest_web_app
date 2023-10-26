@@ -2,8 +2,9 @@
 
 import useSWR, { SWRConfig } from "swr";
 import { auth } from "./firebase";
-import { insertUserInfo } from "@/api/insertUserInfo";
+import { insertUserInfo } from "@/repositories/user";
 import { signInAnonymously } from "firebase/auth";
+import { useCurrentUser } from "@/hooks/current_user";
 
 const initialFetcher = async () => {
   await auth.authStateReady();
@@ -24,9 +25,13 @@ const InitialProvider = ({ children }: { children: React.ReactNode }) => {
     shouldRetryOnError: false,
   });
 
+  // currentUser を監視する処理
+  // firebaseAuth の user がサインインした時に検知して自動で監視処理を発火させる
+  useCurrentUser();
+
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center pt-40">
+      <div className="flex flex-col min-h-screen items-center justify-center pt-40">
         <h1>Loading...</h1>
       </div>
     );
