@@ -8,7 +8,7 @@ import {
   QueryConstraint,
   Unsubscribe,
   collection,
-  endBefore,
+  endAt,
   getCountFromServer,
   getDocs,
   getDocsFromCache,
@@ -36,15 +36,20 @@ const mainQuery: (
   );
 
 export const streamOrderCartsByOrderRoomId: (
-  orderRoomId: string
-) => Unsubscribe = (orderRoomId: string) => {
-  const q = query(
-    collection(db, "order_carts"),
-    where("orderRoomId", "==", orderRoomId),
-    orderBy("updatedAt", "desc")
-  );
+  orderRoomId: string,
+  onNext: (orderCarts: OrderCart[]) => void
+) => Promise<void | Unsubscribe> = async (
+  orderRoomId: string,
+  onNext: (orderCarts: OrderCart[]) => void
+) => {
+  return await getQuery(orderRoomId).then((query) => {
+    onSnapshot(query, async (snapshot) => {
+      console.log("snapshot リッスン");
 
-  return onSnapshot(q, (snapshot) => snapshot);
+      // localからデータを全て取得する
+      return onNext(await getLocalOrderCarts(orderRoomId));
+    });
+  });
 };
 
 export const getOrderedCount: (orderRoomId: string) => Promise<number> = async (
@@ -76,7 +81,7 @@ const getQuery: (
   return getDocsFromCache(q).then((value) =>
     value.docs.length == 0
       ? mainQuery(orderRoomId, [where(isDeleted, "==", false)])
-      : mainQuery(orderRoomId, [endBefore([updatedAt])])
+      : mainQuery(orderRoomId, [endAt(value.docs[0])])
   );
 };
 
