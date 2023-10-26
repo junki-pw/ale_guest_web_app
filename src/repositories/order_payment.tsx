@@ -1,7 +1,11 @@
 import { doc_not_found } from "@/constants/error";
-import { orderPaymentsCollection } from "@/constants/firebase";
+import {
+  orderPaymentsCollection,
+  payersCollection,
+} from "@/constants/firebase";
+import { kCash, kRequest } from "@/constants/keys";
 import { OrderPayment, orderPaymentFromJson } from "@/domain/order_payment";
-import { Payer } from "@/domain/payer";
+import { Payer, payerFromJson } from "@/domain/payer";
 import { auth, db } from "@/providers/firebase";
 import {
   collection,
@@ -12,6 +16,8 @@ import {
 } from "firebase/firestore";
 
 const collectionRef = () => collection(db, orderPaymentsCollection);
+const docRef = (orderPaymentId: string) =>
+  doc(db, orderPaymentsCollection, orderPaymentId);
 
 export const getOrderPaymentById: (
   orderPaymentId: string
@@ -68,5 +74,66 @@ export const makePayment = async (orderPaymentId: string) => {
       updatedAt: serverTimestamp(),
       status: "cash",
     });
+  });
+};
+
+export const updateStatusToCash = async (
+  orderPayment: OrderPayment,
+  payers: Payer[]
+) => {
+  await runTransaction(db, async (t) => {
+    const orderPaymentDocRef = docRef(orderPayment.orderPaymentId);
+
+    /// 最新の OrderPayment を取得
+    const latestOrderPayment: OrderPayment = await t
+      .get(orderPaymentDocRef)
+      .then((value) => {
+        if (value.data() == undefined) {
+          throw doc_not_found;
+        }
+        return orderPaymentFromJson(value.data()!);
+      });
+
+    if (latestOrderPayment.status != kRequest) {
+      throw "お会計のステータスが変更されているため処理を中止しました";
+    }
+
+    let latestPayers: Payer[] = [];
+
+    for (let payer of payers) {
+      const payerDocRef = doc(
+        db,
+        orderPaymentsCollection,
+        orderPayment.orderPaymentId,
+        payersCollection,
+        payer.payerId
+      );
+
+      const latestPayer: Payer = await t.get(payerDocRef).then((value) => {
+        if (value.data() == null) {
+          throw doc_not_found;
+        }
+        return payerFromJson(value.data()!);
+      });
+
+      if (latestPayer.status == kRequest) {
+        latestPayers = [...latestPayers, latestPayer];
+      }
+    }
+
+    for (let latestPayer of latestPayers) {
+      const latestPayerDocRef = doc(
+        db,
+        orderPaymentsCollection,
+        orderPayment.orderPaymentId,
+        payersCollection,
+        latestPayer.payerId
+      );
+
+      t.update(latestPayerDocRef, {
+        updatedAt: serverTimestamp(),
+        status: kCash,
+      });
+    }
   });
 };
