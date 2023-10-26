@@ -1,7 +1,14 @@
 import { doc_not_found } from "@/constants/error";
+import {
+  orderPaymentsCollection,
+  payersCollection,
+} from "@/constants/firebase";
 import { Payer, payerFromJson } from "@/domain/payer";
 import { db } from "@/providers/firebase";
 import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
+
+const collectionRef = (payerId: string) =>
+  collection(db, orderPaymentsCollection, payersCollection, payerId);
 
 export const getPayerById: (
   orderPaymentId: string,
