@@ -6,6 +6,7 @@ import OptionTile from "./components/option_tile";
 import MenuDetailsBottom from "./components/menu_details_bottom";
 import useSWR from "swr";
 import { menuDetailsDetailsFetcher } from "./fetcher";
+import { menuNoImageUrl } from "@/constants/urls";
 
 interface MenuDetailsProps {
   params: {
@@ -17,6 +18,7 @@ interface MenuDetailsProps {
 export default function MenuDetailsPage(props: MenuDetailsProps) {
   const orderRoomId = props.params.orderRoomId;
   const menuId = props.params.menuId;
+
   const [width] = useWindowSize();
   const imageWidth = width - 32;
 
@@ -26,6 +28,7 @@ export default function MenuDetailsPage(props: MenuDetailsProps) {
       menuDetailsDetailsFetcher({
         orderRoomId,
         menuId,
+        orderCartId: null,
       })
   );
 
@@ -40,7 +43,7 @@ export default function MenuDetailsPage(props: MenuDetailsProps) {
       <div className="flex flex-col items-center">
         <div className="relative inline-block overflow-hidden h-fit w-full px-4">
           <Image
-            src={"https://placehold.jp/150x150.png"}
+            src={data.menu.menuImageUrl ?? menuNoImageUrl}
             alt="menu details image"
             width={imageWidth}
             height={imageWidth}
@@ -48,18 +51,19 @@ export default function MenuDetailsPage(props: MenuDetailsProps) {
           ></Image>
         </div>
         <div className="w-full px-4">
-          <h1 className="mt-4 font-bold ">タイトル</h1>
+          <h1 className="mt-4 font-bold ">{data.menu.menuName}</h1>
           <p className="mb-3 mt-1 text-gray-400 text-xs">
-            メニューの説明文テキストメニューの説明文テキストメニューの説明文テキストメニューの説明文テキスト
+            {data.menu.menuDescription}
           </p>
-          <h2 className="mb-4 text-xl text-orange-500 font-bold">¥ 1290</h2>
+          <h2 className="mb-4 text-xl text-orange-500 font-bold">
+            ¥ {data.menu.price}
+          </h2>
         </div>
       </div>
 
-      <OptionTile />
-      <OptionTile />
-      <OptionTile />
-      <OptionTile />
+      {data.menu.optionIds.map((e) => (
+        <OptionTile key={e} optionId={e} data={data} />
+      ))}
 
       <MenuDetailsBottom />
     </main>
