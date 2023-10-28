@@ -1,3 +1,4 @@
+import { doc_not_found } from "@/constants/error";
 import { desc, kOrderRoomId, orderCartsCollection } from "@/constants/firebase";
 import { updatedAt, isActive, isDeleted } from "@/constants/keys";
 import { OrderCart, orderCartFromJson } from "@/domain/order_cart";
@@ -8,8 +9,10 @@ import {
   QueryConstraint,
   Unsubscribe,
   collection,
+  doc,
   endAt,
   getCountFromServer,
+  getDoc,
   getDocs,
   getDocsFromCache,
   limit,
@@ -34,6 +37,17 @@ const mainQuery: (
     orderBy(updatedAt, desc),
     ...queryConstraint
   );
+
+export const getOrderCartById = async (orderCartId: string) => {
+  const d = doc(db, orderCartsCollection, orderCartId);
+
+  return await getDoc(d).then((value) => {
+    if (value.data() == null) {
+      throw doc_not_found;
+    }
+    return orderCartFromJson(value.data()!);
+  });
+};
 
 export const streamOrderCartsByOrderRoomId: (
   orderRoomId: string,
@@ -91,6 +105,21 @@ export const getLocalOrderCarts: (
   const q = mainQuery(orderRoomId, [where(isDeleted, "==", false)]);
 
   return getDocsFromCache(q).then((value) =>
+    value.docs.map((e) => orderCartFromJson(e.data()))
+  );
+};
+
+export const getOrderCartsContainedUnLimitedPlanById: (
+  orderRoomId: string
+) => Promise<OrderCart[]> = async (orderRoomId: string) => {
+  const q = query(
+    collectionRef(),
+    where(isActive, "==", true),
+    where("unLimitedPlanStartAt", "!=", null),
+    where(kOrderRoomId, "==", orderRoomId)
+  );
+
+  return await getDocs(q).then((value) =>
     value.docs.map((e) => orderCartFromJson(e.data()))
   );
 };

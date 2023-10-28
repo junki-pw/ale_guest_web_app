@@ -22,10 +22,19 @@ import {
 const collectionRef = (shopId: string) =>
   collection(db, shopsCollection, shopId, menusCollection);
 
-export const getMenuById: (menuId: string) => Promise<ShopMenu> = async (
-  menuId: string
-) => {
-  const docRef = doc(db, "shops", menuId);
+interface GetMenuByIdProps {
+  shopId: string;
+  menuId: string;
+}
+
+export const getMenuById: ({
+  shopId,
+  menuId,
+}: GetMenuByIdProps) => Promise<ShopMenu> = async ({
+  shopId,
+  menuId,
+}: GetMenuByIdProps) => {
+  const docRef = doc(db, "shops", shopId, menusCollection, menuId);
   return await getDoc(docRef).then((value) => {
     if (value.data() == undefined) {
       throw doc_not_found;
