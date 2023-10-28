@@ -13,6 +13,7 @@ import { MenuOption } from "@/domain/shop_option";
 import { CoverCharge } from "@/domain/cover_charge";
 import { getCoverCharge } from "@/repositories/cover_charge";
 import { getOrderCarts } from "@/repositories/order_cart";
+import { getCurrentDateTime } from "@/repositories/server_timestamp";
 
 export const checkoutFetcher: (
   orderRoomId: string
@@ -26,6 +27,7 @@ export const checkoutFetcher: (
   const coverCharge: CoverCharge | null = await getCoverCharge(
     shop.shopId
   ).catch((e) => null);
+  const currentDateTime: Date = await getCurrentDateTime();
 
   return {
     shop: shop,
@@ -39,5 +41,7 @@ export const checkoutFetcher: (
     paymentMap: {},
     orderCartsContainUnLimitedMenu: [],
     coverCharge: coverCharge,
+    checkoutType: "splitBil",
+    currentDateTime: currentDateTime,
   };
 };

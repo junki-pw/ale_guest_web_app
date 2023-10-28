@@ -17,6 +17,8 @@ export interface CheckoutState {
   customAmount: {};
   isLoading: boolean;
   paymentMap: {};
+  checkoutType: string;
   orderCartsContainUnLimitedMenu: OrderCart[];
   coverCharge: CoverCharge | null;
+  currentDateTime: Date;
 }

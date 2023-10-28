@@ -1,11 +1,13 @@
+"use client";
+
 import useSWR from "swr";
 import CheckoutBottomButton from "./components/checkout_bottom_button";
-import CheckoutMenuOptionTile from "./components/checkout_menu_option_tile";
 import CheckoutNotServedMenuTile from "./components/checkout_not_served_menu_tile";
 import CheckoutUsersPaymentPart from "./components/checkout_users_payment_part";
 import { checkoutFetcher } from "./fetcher";
 import { useEffect } from "react";
 import { CheckoutState } from "./state";
+import CheckoutOrdersPart from "./components/checkout_orders_part";
 
 interface CheckoutProps {
   params: {
@@ -15,35 +17,26 @@ interface CheckoutProps {
 
 export default function CheckoutPage(props: CheckoutProps) {
   const orderRoomId = props.params.orderRoomId;
-  const { data, isLoading, error } = useSWR<CheckoutState>(
+  const { data, isLoading, error, mutate } = useSWR<CheckoutState>(
     `order-rooms/${orderRoomId}/checkout`,
     () => checkoutFetcher(orderRoomId)
   );
 
   useEffect(() => {
     //todo firestore を監視している処理をリッスンしたら useSWR にデータを突っ込んであげる
+    //todo order_room の userIds に変化があったら invalidate する
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (data == undefined || error) {
+    return <div>Error...</div>;
+  }
 
   return (
     <main className="mb-40 relative">
-      <CheckoutUsersPaymentPart />
-      <div className="p-4">
-        <div className="flex justify-between mb-4">
-          <h1>お会計</h1>
-          <p>詳細を確認する ▶︎</p>
-        </div>
-
-        <CheckoutMenuOptionTile />
-        <CheckoutMenuOptionTile />
-        <CheckoutMenuOptionTile />
-        <CheckoutMenuOptionTile />
-        <CheckoutMenuOptionTile />
-        <div className="mt-1 mb-2 h-[1px] bg-gray-200 w-full"></div>
-        <div className="flex justify-between">
-          <h1 className="font-bold">お会計</h1>
-          <h1 className="font-bold">¥12,300</h1>
-        </div>
-      </div>
+      <CheckoutUsersPaymentPart data={data} />
+      <CheckoutOrdersPart data={data} />
       <div className="w-full bg-gray-200 h-[6px]"></div>
 
       <div className="mt-4 px-4">
@@ -54,11 +47,13 @@ export default function CheckoutPage(props: CheckoutProps) {
         </p>
       </div>
 
-      <CheckoutNotServedMenuTile />
-      <CheckoutNotServedMenuTile />
-      <CheckoutNotServedMenuTile />
-      <CheckoutNotServedMenuTile />
-      <CheckoutNotServedMenuTile />
+      {data.orderCarts.map((orderCart) => (
+        <CheckoutNotServedMenuTile
+          key={orderCart.orderCartId}
+          orderCart={orderCart}
+          data={data}
+        />
+      ))}
 
       <CheckoutBottomButton />
     </main>
