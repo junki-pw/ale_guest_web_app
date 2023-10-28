@@ -11,7 +11,7 @@ import { ShopMenu } from "@/domain/shop_menu";
 import { getOptions } from "@/repositories/menu_option";
 import { MenuOption } from "@/domain/shop_option";
 import { CoverCharge } from "@/domain/cover_charge";
-import { getCoverCharge } from "@/repositories/cover_charge";
+import { getCoverChargeById } from "@/repositories/cover_charge";
 import { getOrderCarts } from "@/repositories/order_cart";
 import { getCurrentDateTime } from "@/repositories/server_timestamp";
 
@@ -24,9 +24,10 @@ export const checkoutFetcher: (
   const orderRoomUsers: OrderRoomUser[] = await getOrderRoomUsers(orderRoomId);
   const menus: ShopMenu[] = await getMenus(shop.shopId);
   const options: MenuOption[] = await getOptions(shop.shopId);
-  const coverCharge: CoverCharge | null = await getCoverCharge(
-    shop.shopId
-  ).catch((e) => null);
+  const coverCharge: CoverCharge | null =
+    orderRoom.coverChargeId == null
+      ? null
+      : await getCoverChargeById(shop.shopId, orderRoom.coverChargeId);
   const currentDateTime: Date = await getCurrentDateTime();
 
   return {
