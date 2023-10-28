@@ -1,9 +1,29 @@
+import useSWR from "swr";
 import CheckoutBottomButton from "./components/checkout_bottom_button";
 import CheckoutMenuOptionTile from "./components/checkout_menu_option_tile";
 import CheckoutNotServedMenuTile from "./components/checkout_not_served_menu_tile";
 import CheckoutUsersPaymentPart from "./components/checkout_users_payment_part";
+import { checkoutFetcher } from "./fetcher";
+import { useEffect } from "react";
+import { CheckoutState } from "./state";
 
-export default function CheckoutPage() {
+interface CheckoutProps {
+  params: {
+    orderRoomId: string;
+  };
+}
+
+export default function CheckoutPage(props: CheckoutProps) {
+  const orderRoomId = props.params.orderRoomId;
+  const { data, isLoading, error } = useSWR<CheckoutState>(
+    `order-rooms/${orderRoomId}/checkout`,
+    () => checkoutFetcher(orderRoomId)
+  );
+
+  useEffect(() => {
+    //todo firestore を監視している処理をリッスンしたら useSWR にデータを突っ込んであげる
+  });
+
   return (
     <main className="mb-40 relative">
       <CheckoutUsersPaymentPart />

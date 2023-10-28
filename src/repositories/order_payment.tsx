@@ -1,13 +1,17 @@
 import { doc_not_found } from "@/constants/error";
+import { orderPaymentsCollection } from "@/constants/firebase";
 import { OrderPayment, orderPaymentFromJson } from "@/domain/order_payment";
 import { Payer } from "@/domain/payer";
 import { auth, db } from "@/providers/firebase";
 import {
+  collection,
   doc,
   getDoc,
   runTransaction,
   serverTimestamp,
 } from "firebase/firestore";
+
+const collectionRef = () => collection(db, orderPaymentsCollection);
 
 export const getOrderPaymentById: (
   orderPaymentId: string

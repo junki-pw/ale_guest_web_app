@@ -1,28 +1,28 @@
 import {
   desc,
-  kOrderRoomId,
-  orderChatsCollection,
+  orderRoomUsersCollection,
   orderRoomsCollection,
 } from "@/constants/firebase";
-import { isDeleted, updatedAt } from "@/constants/keys";
-import { OrderChat, orderChatFromJson } from "@/domain/order_chat";
+import { updatedAt } from "@/constants/keys";
+import { OrderRoomUser, orderRoomUserFromJson } from "@/domain/order_room_user";
 import { db } from "@/providers/firebase";
 import {
   DocumentData,
   Query,
   QueryConstraint,
   collection,
+  doc,
   endBefore,
+  getDoc,
   getDocs,
   getDocsFromCache,
   limit,
   orderBy,
   query,
-  where,
 } from "firebase/firestore";
 
 const collectionRef = (orderRoomId: string) =>
-  collection(db, orderRoomsCollection, orderRoomId, orderChatsCollection);
+  collection(db, orderRoomsCollection, orderRoomId, orderRoomUsersCollection);
 
 const mainQuery: (
   orderRoomId: string,
@@ -37,11 +37,21 @@ const mainQuery: (
     ...queryConstraint
   );
 
+export const getOrderRoomUsers: (
+  orderRoomId: string
+) => Promise<OrderRoomUser[]> = async (orderRoomId: string) => {
+  return await getDocs(
+    query(collection(db, "order_rooms", orderRoomId, "order_room_users"))
+  ).then((value) => {
+    return value.docs.map((e) => orderRoomUserFromJson(e.data()));
+  });
+};
+
 /// 最新のアクティブなデータを全て取得する
 /// キャッシュを活用するためデータ取得量はかなり控えめ
 export const getOrderChats: (
   orderRoomId: string
-) => Promise<OrderChat[]> = async (orderRoomId: string) =>
+) => Promise<OrderRoomUser[]> = async (orderRoomId: string) =>
   await getQuery(orderRoomId).then(
     async (query) =>
       await getDocs(query).then(
@@ -65,10 +75,10 @@ const getQuery: (
 
 export const getLocalOrderChats: (
   orderRoomId: string
-) => Promise<OrderChat[]> = async (orderRoomId: string) => {
+) => Promise<OrderRoomUser[]> = async (orderRoomId: string) => {
   const q = mainQuery(orderRoomId, []);
 
   return getDocsFromCache(q).then((value) =>
-    value.docs.map((e) => orderChatFromJson(e.data()))
+    value.docs.map((e) => orderRoomUserFromJson(e.data()))
   );
 };

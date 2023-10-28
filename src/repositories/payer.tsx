@@ -1,7 +1,14 @@
 import { doc_not_found } from "@/constants/error";
+import {
+  orderPaymentsCollection,
+  payersCollection,
+} from "@/constants/firebase";
 import { Payer, payerFromJson } from "@/domain/payer";
 import { db } from "@/providers/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
+
+const collectionRef = (payerId: string) =>
+  collection(db, orderPaymentsCollection, payersCollection, payerId);
 
 export const getPayerById: (
   orderPaymentId: string,
@@ -20,4 +27,13 @@ export const getPayerById: (
     }
     return payerFromJson(value.data()!);
   });
+};
+
+export const getPayers: (orderPaymentId: string) => Promise<Payer[]> = async (
+  orderPaymentId: string
+) => {
+  const q = query(collection(db, "order_payments", orderPaymentId, "payers"));
+  return getDocs(q).then((value) =>
+    value.docs.map((e) => payerFromJson(e.data()))
+  );
 };

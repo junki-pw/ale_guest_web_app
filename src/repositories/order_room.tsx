@@ -1,7 +1,10 @@
 import { doc_not_found } from "@/constants/error";
+import { orderRoomsCollection } from "@/constants/firebase";
 import { OrderRoom, orderRoomFromJson } from "@/domain/order_room";
 import { db } from "@/providers/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc } from "firebase/firestore";
+
+const collectionRef = () => collection(db, orderRoomsCollection);
 
 // order_room を取得する
 export const getOrderRoomById: (

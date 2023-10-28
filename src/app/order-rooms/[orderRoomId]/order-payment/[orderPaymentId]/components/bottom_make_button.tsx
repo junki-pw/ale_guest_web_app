@@ -1,9 +1,4 @@
-import { OrderPayment } from "@/domain/order_payment";
-import { Payer } from "@/domain/payer";
-import { db } from "@/providers/firebase";
 import { makePayment } from "@/repositories/order_payment";
-import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
-import React from "react";
 
 interface Props {
   orderPaymentId: string;
@@ -12,19 +7,12 @@ interface Props {
 export default function BottomMakeButton({ orderPaymentId }: Props) {
   // お支払いを確定
   async function handleMakePayment() {
-    if (
-      window.confirm(
-        "お支払いを確定しても宜しいですか？\n後から変更したい場合はキャンセルできます。"
-      )
-    ) {
-      console.log("yes");
-      //todo
-
+    const alertMessage: string =
+      "お支払いを確定しても宜しいですか？\n後から変更したい場合はキャンセルできます。";
+    if (window.confirm(alertMessage)) {
       await makePayment(orderPaymentId).catch((e) => {
         alert(e);
       });
-    } else {
-      console.log("no");
     }
   }
 

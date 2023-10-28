@@ -10,7 +10,6 @@ export interface OrderCart {
   orderCartNumber: number;
   unLimitedPlanExtraCharge: number;
   unLimitedPlanExtraTime: number;
-  isUnLimitedPlan: boolean;
   isDeleted: boolean;
   isReducedTaxRate: boolean;
   orderedFromGuest: boolean;
@@ -65,10 +64,6 @@ export const orderCartFromJson = (data: DocumentData): OrderCart => {
       data.unLimitedPlanExtraTime == null
         ? 0
         : data.unLimitedPlanExtraTime,
-    isUnLimitedPlan:
-      data.isUnLimitedPlan == undefined || data.isUnLimitedPlan == null
-        ? false
-        : data.isUnLimitedPlan,
     isDeleted:
       data.isDeleted == undefined || data.isDeleted == null
         ? false
