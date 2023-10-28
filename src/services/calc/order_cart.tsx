@@ -18,15 +18,20 @@ interface CalcOrdersAmountProps {
   orderCarts: OrderCart[];
   unLimitedMenuOrderCarts: OrderCart[];
   menus: ShopMenu[];
-  options: MenuOption[];
   orderRoom: OrderRoom;
-  shop: Shop;
   isOrdered: boolean;
   currentDateTime: Date | null;
 }
 
 /// オーダーメニューsの合計金額
-export const calcOrdersAmount = ({
+export const calcOrdersAmount: ({
+  orderCarts,
+  unLimitedMenuOrderCarts,
+  menus,
+  orderRoom,
+  isOrdered,
+  currentDateTime,
+}: CalcOrdersAmountProps) => number = ({
   orderCarts,
   unLimitedMenuOrderCarts,
   menus,
