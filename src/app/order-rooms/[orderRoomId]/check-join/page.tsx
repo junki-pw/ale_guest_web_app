@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -21,12 +21,16 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
   } else if (error || data == undefined) {
     return <div>error</div>;
   }
-
+  const totalCount =
+    data.orderRoom.menCount +
+    data.orderRoom.womenCount +
+    data.orderRoom.teenCount;
+  const users = data.orderRoomUsers;
   return (
     <main className="">
       <nav className="flex flex-col justify-center items-center ">
         <Image
-          src={"https://placehold.jp/150x150.png"}
+          src={data.orderRoom.orderRoomImageUrl}
           alt={"shop_icon_url"}
           width={72}
           height={72}
@@ -36,7 +40,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
           {data.orderRoom.orderRoomName}
         </div>
         <div className="text-gray-600 mb-10 text-center font-bold">
-          メンバー 3・オーダー済み 12
+          メンバー {totalCount}・オーダー済み {data.orderRoom.orderCartCount}
         </div>
       </nav>
       <div className="text-start px-6">
@@ -44,7 +48,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
         <div className="flex justify-between">
           <div className="flex ">
             <Image
-              src={"${data.orderRoom.shopIcon}"}
+              src={data.shop.shopIcon}
               alt={"shop_icon_url"}
               width={32}
               height={32}
@@ -52,7 +56,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
             ></Image>
             <div className="px-4 py-4">
               <div className=" font-bold text-gray-800">
-              {data.orderRoom.shopName}
+                {data.orderRoom.shopName}
               </div>
               <div className="text-gray-400">東京都・新宿区</div>
             </div>
@@ -141,71 +145,21 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
           <div>￥5000/席</div>
         </div>
         <div className="pb-2 pt-8  font-bold text-gray-600 text-xl">
-          参加メンバー5人
+          参加メンバー{totalCount}人
         </div>
-
-        <div className="flex mt-2">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
-        </div>
-
-        <div className="flex mt-2">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
-        </div>
-
-        <div className="flex mt-2">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
-        </div>
-        <div className="flex mt-2">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
-        </div>
-
-        <div className="flex mt-2">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={36}
-            height={36}
-            className="rounded-full"
-          ></Image>
-          <div className="font-bold my-auto mx-4 text-gray-800">
-            ユーザー名ユーザー名ユーザー名ユーザー名
-          </div>
+        <div>
+          {users.map((lists, index) => (
+            <div className="flex mt-2 " key={index}>
+              <Image
+                src={data.orderRoomUsers[index].userIcon}
+                alt={"shop_icon_url"}
+                width={36}
+                height={36}
+                className="rounded-full"
+              ></Image>
+              <div className="font-bold my-auto mx-4 text-gray-800">{data.orderRoomUsers[index].userName}</div>
+            </div>
+          ))}
         </div>
       </div>
       <div className="py-10"></div>

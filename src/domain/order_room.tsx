@@ -21,7 +21,7 @@ export interface OrderRoom {
   userIds: [];
   courses: {};
   unLimitedPlans: {};
-  coverChargeId: string | null;
+  coverChargeId: string |null;
   hostId: string | null;
   lastMessage: string | null;
   lastMessageType: string | null;

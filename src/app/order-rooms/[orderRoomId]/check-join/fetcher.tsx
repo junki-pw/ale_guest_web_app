@@ -6,7 +6,7 @@ import { Shop } from "@/domain/shop";
 import { getShopById } from "@/repositories/shop";
 import { getSeatById } from "@/repositories/shop_seat";
 import { CoverCharge } from "@/domain/cover_charge";
-import { getCoverCharge } from "@/repositories/cover_charge";
+import { getCoverChargeById } from "@/repositories/cover_charge";
 import { getOrderRoomUsers } from "@/repositories/order_room_user";
 import { OrderRoomUser } from "@/domain/order_room_user";
 import { getOrderedCount } from "@/repositories/order_cart";
@@ -19,11 +19,14 @@ export const checkJoinFetcher: (
   console.log("1");
 
   //シート取得
-  // const seat: ShopSeat = await getSeatById(orderRoom.seatId);
+  // const seat: ShopSeat = await getSeatById(orderRoom.seatId, orderRoom.shopId);
   console.log("2");
 
   //coverCharge
-  // const coverCharge: CoverCharge = await getCoverCharge(orderRoom.shopId);
+  // const coverCharge: CoverCharge = await getCoverChargeById(
+  //   orderRoom.shopId,
+  //   orderRoom.coverChargeId
+  // );
   console.log("3");
 
   //shop
