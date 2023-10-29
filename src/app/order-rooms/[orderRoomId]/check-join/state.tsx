@@ -7,8 +7,8 @@ import { ShopSeat } from "@/domain/shop_seat";
 export interface CheckJoinState {
   orderRoom: OrderRoom;
   shop: Shop;
-    seat: ShopSeat;
-    coverCharge: CoverCharge | null;
+    // seat: ShopSeat;
+    // coverCharge: CoverCharge | null;
     orderRoomUsers: OrderRoomUser[];
     orderedCount: number;
     isLoading: boolean;

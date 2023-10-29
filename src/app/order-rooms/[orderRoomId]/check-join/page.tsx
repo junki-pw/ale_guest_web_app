@@ -44,7 +44,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
         <div className="flex justify-between">
           <div className="flex ">
             <Image
-              src={"https://placehold.jp/150x150.png"}
+              src={"${data.orderRoom.shopIcon}"}
               alt={"shop_icon_url"}
               width={32}
               height={32}
@@ -52,7 +52,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
             ></Image>
             <div className="px-4 py-4">
               <div className=" font-bold text-gray-800">
-                店舗名店舗名店舗名店舗名店舗名
+              {data.orderRoom.shopName}
               </div>
               <div className="text-gray-400">東京都・新宿区</div>
             </div>

@@ -16,22 +16,31 @@ export const checkJoinFetcher: (
 ) => Promise<CheckJoinState> = async (orderRoomId: string) => {
   //orderRoomを取得
   const orderRoom: OrderRoom = await getOrderRoomById(orderRoomId);
+  console.log("1");
+
   //シート取得
-  const seat: ShopSeat = await getSeatById(orderRoom.seatId);
+  // const seat: ShopSeat = await getSeatById(orderRoom.seatId);
+  console.log("2");
+
   //coverCharge
-  const coverCharge: CoverCharge = await getCoverCharge(orderRoom.shopId);
+  // const coverCharge: CoverCharge = await getCoverCharge(orderRoom.shopId);
+  console.log("3");
+
   //shop
   const shop: Shop = await getShopById(orderRoom.shopId);
+  console.log("4");
   //orderRoomUsers
   const orderRoomUsers: OrderRoomUser[] = await getOrderRoomUsers(orderRoomId);
+  console.log("5");
 
   //オーダー数
   const orderCount: number = await getOrderedCount(orderRoomId);
+  console.log("6");
 
   return {
     orderRoom: orderRoom,
-    seat: seat,
-    coverCharge: coverCharge,
+    // seat: seat,
+    // coverCharge: coverCharge,
     shop: shop,
     orderRoomUsers: orderRoomUsers,
     orderedCount: orderCount,
