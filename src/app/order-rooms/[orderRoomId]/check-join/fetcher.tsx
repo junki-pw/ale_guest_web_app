@@ -19,14 +19,14 @@ export const checkJoinFetcher: (
   console.log("1");
 
   //シート取得
-  // const seat: ShopSeat = await getSeatById(orderRoom.seatId, orderRoom.shopId);
+  const seat: ShopSeat = await getSeatById(orderRoom.shopId, orderRoom.seatId);
   console.log("2");
 
   //coverCharge
-  // const coverCharge: CoverCharge = await getCoverChargeById(
-  //   orderRoom.shopId,
-  //   orderRoom.coverChargeId
-  // );
+  const coverCharge: CoverCharge | null =
+    orderRoom.coverChargeId == null
+      ? null
+      : await getCoverChargeById(orderRoom.shopId, orderRoom.coverChargeId);
   console.log("3");
 
   //shop
@@ -42,8 +42,8 @@ export const checkJoinFetcher: (
 
   return {
     orderRoom: orderRoom,
-    // seat: seat,
-    // coverCharge: coverCharge,
+    seat: seat,
+    coverCharge: coverCharge,
     shop: shop,
     orderRoomUsers: orderRoomUsers,
     orderedCount: orderCount,

@@ -5,6 +5,9 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import useSWR from "swr";
 import { checkJoinFetcher } from "./fetcher";
 import { CheckJoinState } from "./state";
+import { calcCoverChargeAmount } from "@/services/calc/cover_charge";
+import { calcOrdersAmount } from "@/services/calc/order_cart";
+import CheckJoinAppetizerCoverChargePart from "./components/check_join_appetizer_cover_charge_part";
 
 interface CheckJoinPageProps {
   params: { orderRoomId: string };
@@ -26,6 +29,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
     data.orderRoom.womenCount +
     data.orderRoom.teenCount;
   const users = data.orderRoomUsers;
+  
   return (
     <main className="">
       <nav className="flex flex-col justify-center items-center ">
@@ -72,78 +76,19 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
         <div className="pb-2 pt-8 font-bold text-gray-600 text-xl">
           お席について
         </div>
-        <div className="text-gray-600">
-          お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明お席の説明
-        </div>
+        <div className="text-gray-600">{data.seat.seatDescription}</div>
         <div className="py-4 flex overflow-x-auto">
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
-          <Image
-            src={"https://placehold.jp/150x150.png"}
-            alt={"shop_icon_url"}
-            width={64}
-            height={64}
-            className="my-6 rounded-lg mx-1"
-          ></Image>
+          {data.seat.seatImageUrls.map((imageUrl, index) => (
+            <Image
+              src={imageUrl}
+              alt={"shop_icon_url"}
+              width={64}
+              height={64}
+              className="my-6 rounded-lg mx-1"
+            ></Image>
+          ))}
         </div>
-        <div className="pb-2 pt-8  font-bold text-gray-600 text-xl">
-          突き出し・テーブルチャージ
-        </div>
-        <div className="flex justify-between ">
-          <div className="text-gray-600">突き出し名目</div>
-          <div>￥0</div>
-        </div>
-        <div className="flex justify-between ">
-          <div className="text-gray-600">テーブルチャージ名目</div>
-          <div>￥5000/席</div>
-        </div>
+      <CheckJoinAppetizerCoverChargePart data={data}/>
         <div className="pb-2 pt-8  font-bold text-gray-600 text-xl">
           参加メンバー{totalCount}人
         </div>
@@ -157,7 +102,9 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
                 height={36}
                 className="rounded-full"
               ></Image>
-              <div className="font-bold my-auto mx-4 text-gray-800">{data.orderRoomUsers[index].userName}</div>
+              <div className="font-bold my-auto mx-4 text-gray-800">
+                {data.orderRoomUsers[index].userName}
+              </div>
             </div>
           ))}
         </div>
