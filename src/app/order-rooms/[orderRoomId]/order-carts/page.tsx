@@ -1,28 +1,42 @@
 "use client";
 import React from "react";
 import OrderCartTile from "./components/order_cart_tile";
+import useSWR from "swr";
+import { orderCartFetcher } from "./fetcher";
+import { useOrderCartHooks } from "./hooks";
+import OrderCartBottom from "./components/order_cart_bottom";
 
-export default function OrderHistoriesPage() {
-  const list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+interface OrderCartPageProps {
+  params: {
+    orderRoomId: string;
+  };
+}
+export default function OrderCartPage(props: OrderCartPageProps) {
+  const orderRoomId = props.params.orderRoomId;
+
+  const { data, isLoading, error, mutate } = useSWR(
+    `order-rooms/${orderRoomId}/order-carts`,
+    () => orderCartFetcher(orderRoomId)
+  );
+  const { test } = useOrderCartHooks({ mutate, data });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error || data == undefined) {
+    return <div>Error...</div>;
+  }
+
   return (
     <div className="relative flex flex-col mb-[120px]">
-      {list.map((e) => (
-        <OrderCartTile key={e} />
+      {data.orderCarts.map((orderCart) => (
+        <OrderCartTile
+          key={orderCart.orderCartId}
+          orderCart={orderCart}
+          data={data}
+        />
       ))}
 
-      <div className="fixed bottom-0 flex w-full p-4 bg-white">
-        <div className="block">
-          <h1 className="font-bold text-xs text-gray-400">合計金額</h1>
-          <h2 className="mt-1 font-bold text-2xl">¥1,890</h2>
-        </div>
-        <div className="w-6"></div>
-        <button
-          className="grow bg-orange-400 text-white font-bold text-center rounded-md"
-          onClick={() => {}}
-        >
-          注文を送信する
-        </button>
-      </div>
+      <OrderCartBottom data={data} />
     </div>
   );
 }
