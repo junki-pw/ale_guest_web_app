@@ -5,8 +5,6 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import useSWR from "swr";
 import { checkJoinFetcher } from "./fetcher";
 import { CheckJoinState } from "./state";
-import { calcCoverChargeAmount } from "@/services/calc/cover_charge";
-import { calcOrdersAmount } from "@/services/calc/order_cart";
 import CheckJoinAppetizerCoverChargePart from "./components/check_join_appetizer_cover_charge_part";
 
 interface CheckJoinPageProps {
@@ -29,7 +27,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
     data.orderRoom.womenCount +
     data.orderRoom.teenCount;
   const users = data.orderRoomUsers;
-  
+
   return (
     <main className="">
       <nav className="flex flex-col justify-center items-center ">
@@ -80,6 +78,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
         <div className="py-4 flex overflow-x-auto">
           {data.seat.seatImageUrls.map((imageUrl, index) => (
             <Image
+              key={index}
               src={imageUrl}
               alt={"shop_icon_url"}
               width={64}
@@ -88,7 +87,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
             ></Image>
           ))}
         </div>
-      <CheckJoinAppetizerCoverChargePart data={data}/>
+        <CheckJoinAppetizerCoverChargePart data={data} />
         <div className="pb-2 pt-8  font-bold text-gray-600 text-xl">
           参加メンバー{totalCount}人
         </div>

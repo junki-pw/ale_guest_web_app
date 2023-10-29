@@ -18,11 +18,10 @@ interface OrderRoomPageProps {
   };
 }
 
-export default function OrderRoomPage({
-  params: { orderRoomId },
-}: OrderRoomPageProps) {
+export default function OrderRoomPage(props: OrderRoomPageProps) {
+  const orderRoomId = props.params.orderRoomId;
   const { data, error, isLoading } = useSWR<OrderRoomState>(
-    "order_room/orderRoomId",
+    `order_room/${orderRoomId}`,
     () => orderRoomFetcher(orderRoomId)
   );
 
@@ -33,7 +32,13 @@ export default function OrderRoomPage({
       case order_room_closed:
         return <div>既に終了しているルームのため表示できませんでした</div>;
       case user_not_joined:
-        return <CheckJoinPage />;
+        return (
+          <CheckJoinPage
+            params={{
+              orderRoomId: orderRoomId,
+            }}
+          />
+        );
       default:
         return <div>Wifi環境をご確認の上、もう一度リロードしてみて下さい</div>;
     }
