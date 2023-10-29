@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <RecoilProvider>
         <body className={inter.className}>
           <InitialProvider>{children}</InitialProvider>

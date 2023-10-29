@@ -1,9 +1,17 @@
+import { usersCollection } from "@/constants/firebase";
 import { initialIcon } from "@/constants/urls";
 import { AppUser, appUserFromJson } from "@/domain/user";
 import { UserAuthInfo } from "@/domain/user_auth_info";
 import { UserIdenfier } from "@/domain/user_identifier";
 import { auth, db } from "@/providers/firebase";
-import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
+import {
+  DocumentData,
+  DocumentSnapshot,
+  doc,
+  onSnapshot,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
 export const insertUserInfo = async () => {
@@ -87,4 +95,10 @@ export const insertUserInfo = async () => {
     const userAuthInfoDocref = doc(db, "user_auth_info", userAuthInfo.userId);
     t.set(userAuthInfoDocref, userAuthInfo);
   });
+};
+
+export const streamCurrentUser = (
+  onNext: (snapshot: DocumentSnapshot<DocumentData, DocumentData>) => void
+) => {
+  onSnapshot(doc(db, usersCollection, auth.currentUser!.uid), onNext);
 };

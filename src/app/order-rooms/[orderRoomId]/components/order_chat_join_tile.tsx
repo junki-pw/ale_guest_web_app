@@ -3,7 +3,7 @@ import { OrderChatProps } from "../page";
 export default function OrderChatJoinTile({ orderChat }: OrderChatProps) {
   const createdAt: Date = orderChat.createdAt ?? new Date();
   const month: number = createdAt.getMonth();
-  const day: number = createdAt.getDay();
+  const day: number = createdAt.getDate();
   const hour: number = createdAt.getHours();
   const minutes: number = createdAt.getMinutes();
 

@@ -1,14 +1,38 @@
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
+import Image from "next/image";
+import { Payer } from "@/domain/payer";
+import { kRequest } from "@/constants/keys";
 
-export default function CheckoutStatusUserTile() {
+interface CheckoutStatusUserTileProps {
+  payer: Payer;
+  isWaitingPayment: boolean;
+}
+
+export default function CheckoutStatusUserTile({
+  payer,
+  isWaitingPayment,
+}: CheckoutStatusUserTileProps) {
+  if (isWaitingPayment && payer.status != kRequest) {
+    return <div></div>;
+  } else if (!isWaitingPayment && payer.status == kRequest) {
+    return <div></div>;
+  }
+
   return (
     <div className="px-4 py-1.5 flex items-center">
       <div className="relative inline-block rounded-full overflow-hidden h-9 w-9">
-        <img src="https://placehold.jp/240x240.png" alt="User Image" />
+        <Image
+          src={payer.payerIcon}
+          alt={"user icon"}
+          height={36}
+          width={36}
+          property=""
+        ></Image>
       </div>
-      <h1 className="mx-3 text-left grow">ユーザー名</h1>
-      <h2 className="text-xs text-gray-400">お会計待ち</h2>
+      <h1 className="mx-3 text-left grow">{payer.payerName}</h1>
+      <h2 className="text-xs text-gray-400">
+        {payer.status == kRequest ? "お会計待ち" : ""}
+      </h2>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import {
   Query,
   QueryConstraint,
   collection,
-  endBefore,
+  endAt,
   getDocs,
   getDocsFromCache,
   limit,
@@ -46,7 +46,7 @@ const getQuery: (
   return getDocsFromCache(q).then((value) =>
     value.docs.length == 0
       ? mainQuery(shopId, [where(isActive, "==", true)])
-      : mainQuery(shopId, [endBefore([updatedAt])])
+      : mainQuery(shopId, [endAt(value.docs[0])])
   );
 };
 

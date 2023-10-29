@@ -1,3 +1,4 @@
+import { doc_not_found } from "@/constants/error";
 import { desc, kOrderRoomId, orderCartsCollection } from "@/constants/firebase";
 import { updatedAt, isActive, isDeleted } from "@/constants/keys";
 import { OrderCart, orderCartFromJson } from "@/domain/order_cart";
@@ -8,8 +9,10 @@ import {
   QueryConstraint,
   Unsubscribe,
   collection,
-  endBefore,
+  doc,
+  endAt,
   getCountFromServer,
+  getDoc,
   getDocs,
   getDocsFromCache,
   limit,
@@ -35,16 +38,32 @@ const mainQuery: (
     ...queryConstraint
   );
 
-export const streamOrderCartsByOrderRoomId: (
-  orderRoomId: string
-) => Unsubscribe = (orderRoomId: string) => {
-  const q = query(
-    collection(db, "order_carts"),
-    where("orderRoomId", "==", orderRoomId),
-    orderBy("updatedAt", "desc")
-  );
+export const getOrderCartById = async (orderCartId: string) => {
+  const d = doc(db, orderCartsCollection, orderCartId);
 
-  return onSnapshot(q, (snapshot) => snapshot);
+  return await getDoc(d).then((value) => {
+    if (value.data() == null) {
+      throw doc_not_found;
+    }
+    return orderCartFromJson(value.data()!);
+  });
+};
+
+export const streamOrderCartsByOrderRoomId: (
+  orderRoomId: string,
+  onNext: (orderCarts: OrderCart[]) => void
+) => Promise<void | Unsubscribe> = async (
+  orderRoomId: string,
+  onNext: (orderCarts: OrderCart[]) => void
+) => {
+  return await getQuery(orderRoomId).then((query) => {
+    onSnapshot(query, async (snapshot) => {
+      console.log("snapshot リッスン");
+
+      // localからデータを全て取得する
+      return onNext(await getLocalOrderCarts(orderRoomId));
+    });
+  });
 };
 
 export const getOrderedCount: (orderRoomId: string) => Promise<number> = async (
@@ -76,7 +95,7 @@ const getQuery: (
   return getDocsFromCache(q).then((value) =>
     value.docs.length == 0
       ? mainQuery(orderRoomId, [where(isDeleted, "==", false)])
-      : mainQuery(orderRoomId, [endBefore([updatedAt])])
+      : mainQuery(orderRoomId, [endAt(value.docs[0])])
   );
 };
 
@@ -86,6 +105,21 @@ export const getLocalOrderCarts: (
   const q = mainQuery(orderRoomId, [where(isDeleted, "==", false)]);
 
   return getDocsFromCache(q).then((value) =>
+    value.docs.map((e) => orderCartFromJson(e.data()))
+  );
+};
+
+export const getOrderCartsContainedUnLimitedPlanById: (
+  orderRoomId: string
+) => Promise<OrderCart[]> = async (orderRoomId: string) => {
+  const q = query(
+    collectionRef(),
+    where(isActive, "==", true),
+    where("unLimitedPlanStartAt", "!=", null),
+    where(kOrderRoomId, "==", orderRoomId)
+  );
+
+  return await getDocs(q).then((value) =>
     value.docs.map((e) => orderCartFromJson(e.data()))
   );
 };

@@ -3,7 +3,7 @@ import {
   orderRoomUsersCollection,
   orderRoomsCollection,
 } from "@/constants/firebase";
-import { updatedAt } from "@/constants/keys";
+import { isActive, updatedAt } from "@/constants/keys";
 import { OrderRoomUser, orderRoomUserFromJson } from "@/domain/order_room_user";
 import { db } from "@/providers/firebase";
 import {
@@ -11,14 +11,13 @@ import {
   Query,
   QueryConstraint,
   collection,
-  doc,
-  endBefore,
-  getDoc,
+  endAt,
   getDocs,
   getDocsFromCache,
   limit,
   orderBy,
   query,
+  where,
 } from "firebase/firestore";
 
 const collectionRef = (orderRoomId: string) =>
@@ -37,25 +36,15 @@ const mainQuery: (
     ...queryConstraint
   );
 
-export const getOrderRoomUsers: (
-  orderRoomId: string
-) => Promise<OrderRoomUser[]> = async (orderRoomId: string) => {
-  return await getDocs(
-    query(collection(db, "order_rooms", orderRoomId, "order_room_users"))
-  ).then((value) => {
-    return value.docs.map((e) => orderRoomUserFromJson(e.data()));
-  });
-};
-
 /// 最新のアクティブなデータを全て取得する
 /// キャッシュを活用するためデータ取得量はかなり控えめ
-export const getOrderChats: (
+export const getOrderRoomUsers: (
   orderRoomId: string
 ) => Promise<OrderRoomUser[]> = async (orderRoomId: string) =>
   await getQuery(orderRoomId).then(
     async (query) =>
       await getDocs(query).then(
-        async (value) => await getLocalOrderChats(orderRoomId)
+        async (value) => await getLocalOrderRoomUsers(orderRoomId)
       )
   );
 
@@ -68,15 +57,15 @@ const getQuery: (
 
   return getDocsFromCache(q).then((value) =>
     value.docs.length == 0
-      ? mainQuery(orderRoomId, [])
-      : mainQuery(orderRoomId, [endBefore([updatedAt])])
+      ? mainQuery(orderRoomId, [where(isActive, "==", true)])
+      : mainQuery(orderRoomId, [endAt(value.docs[0])])
   );
 };
 
-export const getLocalOrderChats: (
+export const getLocalOrderRoomUsers: (
   orderRoomId: string
 ) => Promise<OrderRoomUser[]> = async (orderRoomId: string) => {
-  const q = mainQuery(orderRoomId, []);
+  const q = mainQuery(orderRoomId, [where(isActive, "==", true)]);
 
   return getDocsFromCache(q).then((value) =>
     value.docs.map((e) => orderRoomUserFromJson(e.data()))

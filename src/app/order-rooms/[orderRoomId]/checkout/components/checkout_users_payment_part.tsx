@@ -1,41 +1,30 @@
-import Image from "next/image";
-import Link from "next/link";
+import { CheckoutState } from "../state";
+import CheckoutTypes from "./checkout_user_payment/checkout_types";
+import CheckoutUserTile from "./checkout_user_payment/checkout_user_tile";
 
-export default function CheckoutUsersPaymentPart() {
+interface CheckoutUsersPaymentPart {
+  data: CheckoutState;
+}
+
+const _CheckoutType = ["splitBil", "host", "custom"];
+
+export default function CheckoutUsersPaymentPart({
+  data,
+}: CheckoutUsersPaymentPart) {
   return (
     <div className="mt-4">
       <div className="px-4">
-        <h1 className="font-bold mb-4">各メンバーのお会計</h1>
-        <div className="flex-wrap">
-          <_Button />
-          <_Button />
-          <_Button />
-          <_Button />
+        <div className="flex-wrap mb-2.5">
+          {_CheckoutType.map((e) => (
+            <CheckoutTypes key={e} checkoutType={e} data={data} />
+          ))}
         </div>
       </div>
 
-      <button className="flex w-full items-center px-4 py-1.5">
-        <Image
-          className="rounded-full mr-1"
-          src={"https://placehold.jp/120x120.png"}
-          alt=""
-          height={32}
-          width={32}
-        ></Image>
-        <h1 className="ml-1 mr-3 grow text-left">ユーザー名</h1>
-        <h1 className="font-bold mr-3">¥12,900</h1>
-        <p className="ml-1 text-gray-400">変更</p>
-      </button>
-      <p className="mt-2.5 text-green-500 px-4">正確な金額です。</p>
+      {data.orderRoomUsers.map((e) => (
+        <CheckoutUserTile key={e.userId} data={data} orderRoomUser={e} />
+      ))}
       <div className="w-full bg-gray-200 h-[6px] mt-4"></div>
     </div>
-  );
-}
-
-function _Button() {
-  return (
-    <button className="bg-gray-100 text-gray-400 py-1.5 px-3 mr-2 rounded-full">
-      割り勘
-    </button>
   );
 }

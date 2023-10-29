@@ -47,7 +47,7 @@ export const checkThisOrderCartIsApplyUnLimitedPlanProvider = ({
     const lastOrderAt: Date = new Date(
       startAt.getFullYear(),
       startAt.getMonth(),
-      startAt.getDay(),
+      startAt.getDate(),
       startAt.getHours(),
       startAt.getMinutes() + minutes
     );
