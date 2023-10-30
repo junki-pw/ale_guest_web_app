@@ -3,10 +3,10 @@
 import { MenuTile } from "./components/menu_tile";
 import CategoryTile from "./components/category_tile";
 import MenusBottomButton from "./components/menus_bottom_button";
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import { menusFetcher } from "./fetcher";
 import { useMenusHooks } from "./hooks";
-import { v4 as uuidv4 } from "uuid";
+import { MenusState } from "./state";
 
 interface MenusProps {
   params: {
@@ -16,12 +16,10 @@ interface MenusProps {
 
 export default function MenusPage(params: MenusProps) {
   const orderRoomId = params.params.orderRoomId;
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error, mutate } = useSWR(
     `order-rooms/${orderRoomId}/menus`,
     () => menusFetcher(orderRoomId)
   );
-
-  const { orderCarts } = useMenusHooks(orderRoomId);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -29,6 +27,16 @@ export default function MenusPage(params: MenusProps) {
     return <div>Error...</div>;
   }
 
+  return <Body data={data} mutate={mutate} />;
+}
+
+interface BodyProps {
+  data: MenusState;
+  mutate: KeyedMutator<MenusState>;
+}
+
+function Body({ data, mutate }: BodyProps) {
+  const { orderCarts } = useMenusHooks(data.orderRoom.orderRoomId);
   return (
     <main className="relative pb-40">
       {data.categories.map((category) => (
@@ -37,13 +45,13 @@ export default function MenusPage(params: MenusProps) {
           <CategoryTile key={category.categoryId} category={category} />
 
           {/* メニュータイル */}
-          {data.menus.map((menu) => (
+          {data.menus.map((menu, index) => (
             <MenuTile
-              key={uuidv4()}
+              key={index}
               menu={menu}
               orderCarts={orderCarts}
               category={category}
-              orderRoomId={orderRoomId}
+              orderRoomId={data.orderRoom.orderRoomId}
             />
           ))}
         </div>
