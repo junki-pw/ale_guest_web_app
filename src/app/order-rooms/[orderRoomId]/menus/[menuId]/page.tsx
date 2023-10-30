@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import React, { useLayoutEffect, useState } from "react";
-import OptionTile from "./components/option_tile";
+import React from "react";
+import MenuDetailsOptionTiles from "./components/option_tiles";
 import MenuDetailsBottom from "./components/menu_details_bottom";
 import useSWR from "swr";
 import { menuDetailsDetailsFetcher } from "./fetcher";
-import { menuNoImageUrl } from "@/constants/urls";
+import MenuDetailsImagePart from "./components/menu_details_image_part";
+import MenuDetailsTitleDescPart from "./components/title_desc_part";
 
 interface MenuDetailsProps {
   params: {
@@ -18,9 +18,6 @@ interface MenuDetailsProps {
 export default function MenuDetailsPage(props: MenuDetailsProps) {
   const orderRoomId = props.params.orderRoomId;
   const menuId = props.params.menuId;
-
-  const [width] = useWindowSize();
-  const imageWidth = width - 32;
 
   const { data, isLoading, error } = useSWR(
     `order-rooms/${orderRoomId}/menus/${menuId}`,
@@ -39,48 +36,19 @@ export default function MenuDetailsPage(props: MenuDetailsProps) {
   }
 
   return (
-    <main className="relative h-full pt-4 pb-20">
-      <div className="flex flex-col items-center">
-        <div className="relative inline-block overflow-hidden h-fit w-full px-4">
-          <Image
-            src={data.menu.menuImageUrl ?? menuNoImageUrl}
-            alt="menu details image"
-            width={imageWidth}
-            height={imageWidth}
-            priority
-          ></Image>
-        </div>
-        <div className="w-full px-4">
-          <h1 className="mt-4 font-bold ">{data.menu.menuName}</h1>
-          <p className="mb-3 mt-1 text-gray-400 text-xs">
-            {data.menu.menuDescription}
-          </p>
-          <h2 className="mb-4 text-xl text-orange-500 font-bold">
-            ¥ {data.menu.price}
-          </h2>
-        </div>
-      </div>
+    <main className="relative pt-4 pb-20">
+      {/* 画像 */}
+      <MenuDetailsImagePart data={data} />
 
-      {data.menu.optionIds.map((e) => (
-        <OptionTile key={e} optionId={e} data={data} />
+      {/* メニュー名・説明・料金 */}
+      <MenuDetailsTitleDescPart data={data} />
+
+      {/* オプション */}
+      {data.menu.optionIds.map((optionId, index) => (
+        <MenuDetailsOptionTiles key={index} optionId={optionId} data={data} />
       ))}
 
-      <MenuDetailsBottom />
+      <MenuDetailsBottom data={data} />
     </main>
   );
 }
-
-const useWindowSize = (): number[] => {
-  const [size, setSize] = useState([0, 0]);
-  useLayoutEffect(() => {
-    const updateSize = (): void => {
-      setSize([window.innerWidth, window.innerHeight]);
-    };
-
-    window.addEventListener("resize", updateSize);
-    updateSize();
-
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-  return size;
-};

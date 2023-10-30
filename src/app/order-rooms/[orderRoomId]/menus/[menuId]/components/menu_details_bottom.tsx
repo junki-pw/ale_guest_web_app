@@ -1,6 +1,13 @@
+import { calcMenuAmount } from "@/services/calc/menu";
 import React, { MouseEventHandler, useState } from "react";
+import { MenuDetailsState } from "../state";
+import { convertIsReducedTaxRate } from "@/services/convert/string";
 
-export default function MenuDetailsBottom() {
+interface MenuDetailsBottomProps {
+  data: MenuDetailsState;
+}
+
+export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
   const [quantity, setQuantity] = useState(1);
 
   function decrement() {
@@ -8,6 +15,16 @@ export default function MenuDetailsBottom() {
       setQuantity(quantity - 1);
     }
   }
+
+  const amount: number = calcMenuAmount({
+    menu: data.menu,
+    optionList: data.options,
+    options: data.selectedOptionMenus,
+    orderCount: quantity,
+    shop: data.shop,
+    isReducedTaxRate: convertIsReducedTaxRate(data.shop),
+    discounts: [],
+  });
 
   return (
     <div className="fixed bottom-4 flex w-full px-4">
@@ -19,7 +36,7 @@ export default function MenuDetailsBottom() {
         <_Button isMinus={false} onClick={() => setQuantity(quantity + 1)} />
       </div>
       <button className="ml-3 bg-orange-500 py-3 grow rounded-lg text-white font-bold">
-        保存する
+        カートに追加・¥{amount.toLocaleString()}
       </button>
     </div>
   );
