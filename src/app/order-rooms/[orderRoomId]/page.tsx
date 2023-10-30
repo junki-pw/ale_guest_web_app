@@ -11,6 +11,8 @@ import { orderRoomFetcher } from "./fetcher";
 import { OrderRoomState } from "./state";
 import CheckJoinPage from "./check-join/page";
 import { order_room_closed, user_not_joined } from "@/constants/error";
+import { useEffect } from "react";
+import OrderRoomBottom from "./components/order_room_bottom";
 
 interface OrderRoomPageProps {
   params: {
@@ -25,9 +27,16 @@ export default function OrderRoomPage(props: OrderRoomPageProps) {
     () => orderRoomFetcher(orderRoomId)
   );
 
+  // 初期化処理で一番下にスクロール
+  useEffect(() => {
+    var element = document.documentElement;
+    var bottom = element.scrollHeight - element.clientHeight;
+    window.scroll(0, bottom);
+  }, []);
+
   if (isLoading) {
     return <div>Loading...</div>;
-  } else if (error) {
+  } else if (error || data == undefined) {
     switch (error) {
       case order_room_closed:
         return <div>既に終了しているルームのため表示できませんでした</div>;
@@ -44,13 +53,30 @@ export default function OrderRoomPage(props: OrderRoomPageProps) {
     }
   }
 
+  return <Body data={data} />;
+}
+
+interface BodyProps {
+  data: OrderRoomState;
+}
+
+function Body({ data }: BodyProps) {
+  // 初期化処理で一番下にスクロール
+  useEffect(() => {
+    var element = document.documentElement;
+    var bottom = element.scrollHeight - element.clientHeight;
+    window.scroll(0, bottom);
+  }, []);
+
   return (
-    <main className="h-full">
-      <div className="grow flex flex-col">
+    <main className="relative h-full mt-6">
+      <div className="grow flex flex-col-reverse">
         {data!.orderChats.map((event) => (
           <ChatTiles key={uuidv4()} orderChat={event} />
         ))}
       </div>
+      <div className="h-[87.5px]"></div>
+      <OrderRoomBottom data={data} />
     </main>
   );
 }
