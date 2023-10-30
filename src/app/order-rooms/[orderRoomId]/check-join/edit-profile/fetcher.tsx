@@ -27,8 +27,12 @@ export const checkJoinEditProfileFetcher: () => CheckJoinEditProfileState =
       whale1Image,
     ];
 
+    const imageUrls = shuffle(images);
+
     return {
       dummyShuffleImages: shuffle(images),
+      selectedImageUrl: imageUrls[0],
+      inputValue: "",
     };
   };
 

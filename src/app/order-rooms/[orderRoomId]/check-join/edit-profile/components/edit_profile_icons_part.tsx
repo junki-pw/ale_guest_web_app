@@ -1,26 +1,25 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { CheckJoinEditProfileState } from "../state";
+import { KeyedMutator } from "swr";
 
 interface EditProfileIconsPartProps {
   data: CheckJoinEditProfileState;
+  mutate: KeyedMutator<CheckJoinEditProfileState>;
 }
 
 export default function EditProfileIconsPart({
   data,
+  mutate,
 }: EditProfileIconsPartProps) {
-  const [selectedImageUrl, setSelectedImageUrl] = useState(
-    data.dummyShuffleImages[0]
-  );
-
   function handleUpdateSelectedImageUrl(imageUrl: string) {
-    setSelectedImageUrl(imageUrl);
+    mutate({ ...data, selectedImageUrl: imageUrl }, false);
   }
 
   return (
     <div className="flex flex-wrap px-4 w-full justify-center">
       {data.dummyShuffleImages.map((imageUrl, index) => {
-        const isSelected: boolean = imageUrl == selectedImageUrl;
+        const isSelected: boolean = imageUrl == data.selectedImageUrl;
         return (
           <button
             key={index}
