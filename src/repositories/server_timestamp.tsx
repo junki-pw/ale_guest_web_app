@@ -12,7 +12,7 @@ export const getCurrentDateTime: () => Promise<Date> = async () => {
     createdAt: serverTimestamp(),
   }).then(async (value) => {
     return await getDoc(doc(db, "server_timestamps", value.id)).then((doc) =>
-      doc.data() == null ? new Date() : doc.data()!["createdAt"]
+      doc.data() == null ? new Date() : doc.data()!["createdAt"].toDate()
     );
   });
 };
