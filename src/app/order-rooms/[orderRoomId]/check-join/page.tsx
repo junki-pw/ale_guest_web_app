@@ -54,7 +54,7 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
       <div className="h-[120px]"></div>
 
       {/* 参加ボタン */}
-      <CheckJoinBottom />
+      <CheckJoinBottom orderRoomId={data.orderRoom.orderRoomId} />
     </main>
   );
 }
