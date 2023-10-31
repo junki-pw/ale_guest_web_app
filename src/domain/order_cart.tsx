@@ -1,4 +1,4 @@
-import { DocumentData } from "firebase/firestore";
+import { DocumentData, FieldValue } from "firebase/firestore";
 
 export interface OrderCart {
   orderCartId: string;
@@ -35,8 +35,8 @@ export interface OrderCart {
   orderAt: Date | null;
   servedAt: Date | null;
   printedAt: Date | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
+  createdAt: Date | FieldValue | null;
+  updatedAt: Date | FieldValue | null;
 }
 
 export const orderCartFromJson = (data: DocumentData): OrderCart => {

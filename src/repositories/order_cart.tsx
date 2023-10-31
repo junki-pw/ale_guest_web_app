@@ -1,8 +1,22 @@
 import { doc_not_found } from "@/constants/error";
-import { desc, kOrderRoomId, orderCartsCollection } from "@/constants/firebase";
+import {
+  desc,
+  kOrderRoomId,
+  orderCartsCollection,
+  orderRoomsCollection,
+} from "@/constants/firebase";
 import { updatedAt, isActive, isDeleted } from "@/constants/keys";
 import { OrderCart, orderCartFromJson } from "@/domain/order_cart";
+import { OrderRoom, orderRoomFromJson } from "@/domain/order_room";
+import { Shop } from "@/domain/shop";
+import { ShopMenu } from "@/domain/shop_menu";
+import { MenuOption } from "@/domain/shop_option";
+import { AppUser } from "@/domain/user";
 import { db } from "@/providers/firebase";
+import { calcMenuAmount } from "@/services/calc/menu";
+import { calcOrderCartAmount } from "@/services/calc/order_cart";
+import { convertIsReducedTaxRate } from "@/services/convert/string";
+import { searchMenu, searchOption } from "@/services/methods/search";
 import {
   DocumentData,
   Query,
@@ -15,12 +29,18 @@ import {
   getDoc,
   getDocs,
   getDocsFromCache,
+  increment,
   limit,
   onSnapshot,
   orderBy,
   query,
+  runTransaction,
+  serverTimestamp,
   where,
 } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
+import produce from "immer";
+import { createOrderCart } from "@/services/create/order_cart";
 
 const collectionRef = () => collection(db, orderCartsCollection);
 
@@ -123,3 +143,120 @@ export const getOrderCartsContainedUnLimitedPlanById: (
     value.docs.map((e) => orderCartFromJson(e.data()))
   );
 };
+
+interface saveOrderCartProps {
+  orderRoom: OrderRoom;
+  shop: Shop;
+  userIds: any[];
+  currentUser: AppUser;
+  menuId: string;
+  options: MenuOption[];
+  menus: ShopMenu[];
+  selectedOptions: {};
+}
+
+export async function saveOrderCart({
+  orderRoom,
+  shop,
+  userIds,
+  currentUser,
+  menuId,
+  options,
+  menus,
+  selectedOptions,
+}: saveOrderCartProps) {
+  const orderedMenuAmount = calcMenuAmount({
+    menu: searchMenu(menus, menuId),
+    optionList: options,
+    options: selectedOptions,
+    orderCount: userIds.length,
+    shop,
+    isReducedTaxRate: convertIsReducedTaxRate(shop),
+    discounts: [],
+  });
+
+  //todo 必須オプションチェック
+  const orderCart = createOrderCart({
+    orderCartId: uuidv4(),
+    orderRoomId: orderRoom.orderRoomId,
+    shop,
+    userIds: userIds as any,
+    options,
+    menuId,
+    currentUser,
+    orderedMenuAmount,
+  });
+
+  /// 必須オプションで選択しているかチェック
+  for (const [optionId, menuIds] of Object.entries(orderCart.options)) {
+    const option: MenuOption = searchOption(options, optionId);
+    if (option.isRequiredOption && (menuIds as any).isEmpty) {
+      throw Error("必須の項目で選択されていないオプションがあるようです");
+    }
+  }
+
+  await runTransaction(db, async (t) => {
+    const orderRoomDocRef = doc(
+      db,
+      orderRoomsCollection,
+      orderRoom.orderRoomId
+    );
+
+    const latestOrderRoom: OrderRoom = await t
+      .get(orderRoomDocRef)
+      .then((value) => {
+        if (value.data() == null) {
+          throw Error(doc_not_found);
+        }
+        return orderRoomFromJson(value.data()!);
+      });
+
+    if (!latestOrderRoom.onOrder) {
+      throw Error(
+        "オーダーストップしているため送信できませんでした\nオーダーするためには現在のお会計をキャンセルする必要があります"
+      );
+    }
+
+    const orderCartDocRef = doc(
+      db,
+      orderCartsCollection,
+      orderCart.orderCartId
+    );
+
+    const latestOrderCart: OrderCart | null = await t
+      .get(orderCartDocRef)
+      .then((value) => {
+        if (value.data() == null) {
+          return null;
+        }
+        return orderCartFromJson(value.data()!);
+      });
+
+    if (latestOrderCart?.orderId != null) {
+      /// 既に注文済みのためエラーを出す
+      throw Error("alreadyOrdered");
+    }
+
+    // order_room を更新
+    t.update(orderRoomDocRef, {
+      orderCartCount: increment(1),
+      updatedAt: serverTimestamp(),
+    });
+
+    if (latestOrderCart == null) {
+      /// 新規作成
+      const newOrderCart: OrderCart = {
+        ...orderCart,
+        orderCartNumber: latestOrderRoom.orderCartCount + 1,
+      };
+      t.set(orderCartDocRef, newOrderCart);
+    } else {
+      /// アップデート
+      t.update(orderCartDocRef, {
+        ...orderCart,
+      });
+    }
+  }).catch((e) => {
+    throw e;
+  });
+}

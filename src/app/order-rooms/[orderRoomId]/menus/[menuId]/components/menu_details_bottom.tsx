@@ -2,12 +2,17 @@ import { calcMenuAmount } from "@/services/calc/menu";
 import React, { MouseEventHandler, useState } from "react";
 import { MenuDetailsState } from "../state";
 import { convertIsReducedTaxRate } from "@/services/convert/string";
+import { saveOrderCart } from "@/repositories/order_cart";
+import { useRouter } from "next/navigation";
+import { AppUser } from "@/domain/user";
+import { useCurrentUser } from "@/hooks/current_user";
 
 interface MenuDetailsBottomProps {
   data: MenuDetailsState;
 }
 
 export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
 
   function decrement() {
@@ -26,6 +31,30 @@ export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
     discounts: [],
   });
 
+  // const { data: currentUser } = useSWR<AppUser>("currentUser");
+  const { currentUser } = useCurrentUser();
+
+  async function handleSaveOrderCart() {
+    let userIds: any[] = [];
+    for (var i = 0; i < quantity; i++) {
+      userIds = [...userIds, currentUser!.userId];
+    }
+
+    const saveOrderCartProps = {
+      orderRoom: data.orderRoom,
+      shop: data.shop,
+      userIds: userIds,
+      currentUser: currentUser as AppUser,
+      menuId: data.menu.menuId,
+      options: data.options,
+      menus: data.menus,
+      selectedOptions: data.selectedOptionMenus,
+    };
+    await saveOrderCart(saveOrderCartProps)
+      .then((value) => router.back())
+      .catch((e) => alert(e));
+  }
+
   return (
     <div className="fixed bottom-4 flex w-full px-4">
       <div className="flex h-[48px] items-center bg-orange-100 px-4 rounded-lg">
@@ -35,7 +64,10 @@ export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
         </h1>
         <_Button isMinus={false} onClick={() => setQuantity(quantity + 1)} />
       </div>
-      <button className="ml-3 bg-orange-500 py-3 grow rounded-lg text-white font-bold">
+      <button
+        className="ml-3 bg-orange-500 py-3 grow rounded-lg text-white font-bold"
+        onClick={handleSaveOrderCart}
+      >
         カートに追加・¥{amount.toLocaleString()}
       </button>
     </div>
