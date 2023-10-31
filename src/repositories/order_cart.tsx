@@ -14,7 +14,6 @@ import { MenuOption } from "@/domain/shop_option";
 import { AppUser } from "@/domain/user";
 import { db } from "@/providers/firebase";
 import { calcMenuAmount } from "@/services/calc/menu";
-import { calcOrderCartAmount } from "@/services/calc/order_cart";
 import { convertIsReducedTaxRate } from "@/services/convert/string";
 import { searchMenu, searchOption } from "@/services/methods/search";
 import {
@@ -39,7 +38,6 @@ import {
   where,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
-import produce from "immer";
 import { createOrderCart } from "@/services/create/order_cart";
 
 const collectionRef = () => collection(db, orderCartsCollection);
