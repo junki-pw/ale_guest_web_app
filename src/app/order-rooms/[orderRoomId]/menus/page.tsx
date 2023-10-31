@@ -57,7 +57,7 @@ function Body({ data, mutate }: BodyProps) {
         </div>
       ))}
 
-      <MenusBottomButton />
+      <MenusBottomButton data={data} />
     </main>
   );
 }

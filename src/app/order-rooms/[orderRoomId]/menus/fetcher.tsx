@@ -14,6 +14,11 @@ import { NormalBH } from "@/domain/normal_bh";
 import { getTodayNormalBHs } from "@/repositories/normal_bh";
 import { HolidayBH } from "@/domain/holiday_bh";
 import { getTodayHolidayBHs } from "@/repositories/holiday_bh";
+import { OrderCart } from "@/domain/order_cart";
+import {
+  getOrderCarts,
+  getOrderCartsContainedUnLimitedPlanById,
+} from "@/repositories/order_cart";
 
 export const menusFetcher: (
   orderRoomId: string
@@ -26,6 +31,9 @@ export const menusFetcher: (
   const currentDateTime: Date = await getCurrentDateTime();
   const normalBHs: NormalBH[] = await getTodayNormalBHs(currentDateTime);
   const holidayBHs: HolidayBH[] = await getTodayHolidayBHs(currentDateTime);
+  const orderCarts: OrderCart[] = await getOrderCarts(orderRoom.orderRoomId);
+  const unLimitedPlanMenuOrderCarts: OrderCart[] =
+    await getOrderCartsContainedUnLimitedPlanById(orderRoomId);
 
   return {
     orderRoom: orderRoom,
@@ -36,7 +44,7 @@ export const menusFetcher: (
     categories: categories,
     normalBHs: normalBHs,
     holidayBHs: holidayBHs,
-    orderCarts: [],
-    unLimitedPlanMenuOrderCarts: [],
+    orderCarts: orderCarts,
+    unLimitedPlanMenuOrderCarts: unLimitedPlanMenuOrderCarts,
   };
 };
