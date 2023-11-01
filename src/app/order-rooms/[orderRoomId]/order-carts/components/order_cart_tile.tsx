@@ -9,6 +9,11 @@ import { OrderCartState } from "../state";
 import { ShopMenu } from "@/domain/shop_menu";
 import { searchMenu } from "@/services/methods/search";
 import { convertOptionTexts } from "@/services/convert/option_text";
+import {
+  deleteOrderCart,
+  updateOrderCartUserIds,
+} from "@/repositories/order_cart";
+import { useCurrentUser } from "@/hooks/current_user";
 
 interface OrderCartTileProps {
   orderCart: OrderCart;
@@ -16,14 +21,45 @@ interface OrderCartTileProps {
 }
 
 export default function OrderCartTile({ data, orderCart }: OrderCartTileProps) {
-  if (orderCart.orderId == null) {
+  const { currentUser } = useCurrentUser();
+
+  if (orderCart.orderId != null) {
     return <div></div>;
   }
 
   const menu: ShopMenu = searchMenu(data.menus, orderCart.menuId);
   const optionTexts = convertOptionTexts({ orderCart, menus: data.menus });
 
-  const handleUpdateQuantity = (isAdd: boolean) => {};
+  const handleUpdateQuantity = async (isAdd: boolean) => {
+    if (orderCart.userIds.length <= 1 && !isAdd) {
+      // 削除処理
+      handleAlertDeleteDialog();
+      return;
+    }
+
+    // 追加 or 減らす処理
+    await updateOrderCartUserIds({
+      isAdd,
+      orderCartId: orderCart.orderCartId,
+      currentUserId: currentUser!.userId,
+      shop: data.shop,
+      menus: data.menus,
+      options: data.options,
+    });
+  };
+
+  function handleAlertDeleteDialog() {
+    if (confirm("カートを削除しますか")) {
+      handleDeleteOrderCart();
+    }
+  }
+
+  async function handleDeleteOrderCart() {
+    // 削除処理
+    await deleteOrderCart({ currentUser: currentUser!, orderCart }).catch((e) =>
+      alert(e)
+    );
+  }
 
   return (
     <div>
@@ -60,6 +96,7 @@ export default function OrderCartTile({ data, orderCart }: OrderCartTileProps) {
           <div className="flex h-8 w-8 content-center items-center justify-center bg-gray-100 rounded-full">
             <FontAwesomeIcon
               icon={faTrash}
+              onClick={handleAlertDeleteDialog}
               className="h-[16px] text-gray-500"
             />
           </div>

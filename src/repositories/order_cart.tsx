@@ -179,7 +179,7 @@ export async function saveOrderCart({
     orderRoomId: orderRoom.orderRoomId,
     shop,
     userIds: userIds as any,
-    options,
+    selectedOptions,
     menuId,
     currentUser,
     orderedMenuAmount,
@@ -256,5 +256,125 @@ export async function saveOrderCart({
     }
   }).catch((e) => {
     throw e;
+  });
+}
+
+interface UpdateOrderCartUserIdsProps {
+  isAdd: boolean;
+  orderCartId: string;
+  currentUserId: string;
+  shop: Shop;
+  menus: ShopMenu[];
+  options: MenuOption[];
+}
+
+export async function updateOrderCartUserIds({
+  isAdd,
+  orderCartId,
+  currentUserId,
+  shop,
+  menus,
+  options,
+}: UpdateOrderCartUserIdsProps) {
+  await runTransaction(db, async (t) => {
+    //todo
+    const orderCartDocRef = doc(db, orderCartsCollection, orderCartId);
+
+    const latestOrderCart: OrderCart = await t
+      .get(orderCartDocRef)
+      .then((value) => {
+        if (value.data() == null) {
+          throw doc_not_found;
+        }
+
+        return orderCartFromJson(value.data()!);
+      });
+
+    if (latestOrderCart.orderId != null) {
+      throw "既に注文しているためデータを更新できませんでした";
+    }
+
+    let userIds: string[] = [];
+    if (isAdd) {
+      userIds = [...latestOrderCart.userIds, currentUserId];
+    } else {
+      /// 同じidでも2回目以降はuserIdsに追加する
+      let isDuplicateCheck: boolean = true;
+      for (const userId of latestOrderCart.userIds) {
+        if (userId == currentUserId && isDuplicateCheck) {
+          isDuplicateCheck = false;
+        } else {
+          userIds = [...userIds, userId];
+        }
+      }
+    }
+
+    const menu: ShopMenu = searchMenu(menus, latestOrderCart.menuId);
+
+    const orderedAmount: number = calcMenuAmount({
+      menu,
+      optionList: options,
+      options: latestOrderCart.options,
+      orderCount: userIds.length,
+      shop,
+      isReducedTaxRate: latestOrderCart.isReducedTaxRate,
+      discounts: latestOrderCart.corrects,
+    });
+
+    t.update(orderCartDocRef, {
+      orderedAmount: orderedAmount,
+      userIds: userIds,
+      updatedAt: serverTimestamp(),
+    });
+  });
+}
+
+interface deleteOrderCartProps {
+  currentUser: AppUser;
+  orderCart: OrderCart;
+}
+
+export async function deleteOrderCart({
+  currentUser,
+  orderCart,
+}: deleteOrderCartProps) {
+  await runTransaction(db, async (t) => {
+    const orderRoomDocRef = doc(
+      db,
+      orderRoomsCollection,
+      orderCart.orderRoomId
+    );
+
+    const latestOrderRoom = await t
+      .get(orderRoomDocRef)
+      .then((value) => orderRoomFromJson(value.data()!));
+
+    if (!latestOrderRoom.onOrder) {
+      throw "オーダーストップのため処理を完了できませんでした\nホストにオーダーを再開するようにお伝えください";
+    }
+
+    const orderCartDocRef = doc(
+      db,
+      orderCartsCollection,
+      orderCart.orderCartId
+    );
+
+    const latestOrderCart = await t
+      .get(orderCartDocRef)
+      .then((value) => orderCartFromJson(value.data()!));
+
+    if (latestOrderCart.orderId != null) {
+      throw "既に注文しているためデータを更新できませんでした";
+    }
+
+    t.update(orderCartDocRef, {
+      updatedAt: serverTimestamp(),
+      isDeleted: true,
+      deletedAt: serverTimestamp(),
+      deleteUserId: currentUser.userId,
+      deleteUserName: currentUser.userName,
+      deleteUserIcon: currentUser.userIcon,
+    });
+    console.log("test");
   });
 }

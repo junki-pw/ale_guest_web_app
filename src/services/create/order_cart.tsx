@@ -9,7 +9,7 @@ interface CreateOrderCartProps {
   orderRoomId: string;
   shop: Shop;
   userIds: [];
-  options: {};
+  selectedOptions: {};
   menuId: string;
   currentUser: AppUser;
   orderedMenuAmount: number;
@@ -20,7 +20,7 @@ export function createOrderCart({
   orderRoomId,
   shop,
   userIds,
-  options,
+  selectedOptions,
   menuId,
   currentUser,
   orderedMenuAmount,
@@ -30,7 +30,7 @@ export function createOrderCart({
     orderRoomId: orderRoomId,
     shopId: shop.shopId,
     userIds: userIds,
-    options: options,
+    options: selectedOptions,
     serveStatus: "preparing",
     orderCartNumber: 0,
     unLimitedPlanExtraCharge: 0,
