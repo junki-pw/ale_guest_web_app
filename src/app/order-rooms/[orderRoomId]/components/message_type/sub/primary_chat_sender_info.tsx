@@ -19,13 +19,15 @@ export default function PrimaryChatSenderInfo({
 
   return (
     <div className="mb-4 flex px-4">
-      <div style={{ position: "relative", height: "32px", widows: "32px" }}>
+      <div
+        className="h-8 w-8"
+        style={{ position: "relative", height: "32px", width: "32px" }}
+      >
         <Image
           className="rounded-full"
           src={orderChat.senderIcon}
           alt="order-chat-icon"
-          height={32}
-          width={32}
+          fill
           priority
         ></Image>
       </div>

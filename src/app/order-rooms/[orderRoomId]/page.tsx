@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import OrderChatJoinTile from "./components/order_chat_join_tile";
 import { OrderChat } from "@/domain/order_chat";
@@ -6,13 +7,14 @@ import OrderChatTextMessage from "./components/order_chat_text_message";
 import OrderChatCheckoutMessage from "./components/order_chat_checkout_message";
 import OrderChatOrderPaymentMessage from "./components/order_chat_order_payment_message";
 import { v4 as uuidv4 } from "uuid";
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import { orderRoomFetcher } from "./fetcher";
 import { OrderRoomState } from "./state";
 import CheckJoinPage from "./check-join/page";
 import { order_room_closed, user_not_joined } from "@/constants/error";
 import { useEffect } from "react";
 import OrderRoomBottom from "./components/order_room_bottom";
+import { streamOrderChats } from "@/repositories/order_chat";
 
 interface OrderRoomPageProps {
   params: {
@@ -22,17 +24,10 @@ interface OrderRoomPageProps {
 
 export default function OrderRoomPage(props: OrderRoomPageProps) {
   const orderRoomId = props.params.orderRoomId;
-  const { data, error, isLoading } = useSWR<OrderRoomState>(
+  const { data, error, isLoading, mutate } = useSWR<OrderRoomState>(
     `order_room/${orderRoomId}`,
     () => orderRoomFetcher(orderRoomId)
   );
-
-  // 初期化処理で一番下にスクロール
-  useEffect(() => {
-    var element = document.documentElement;
-    var bottom = element.scrollHeight - element.clientHeight;
-    window.scroll(0, bottom);
-  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -53,19 +48,24 @@ export default function OrderRoomPage(props: OrderRoomPageProps) {
     }
   }
 
-  return <Body data={data} />;
+  return <Body data={data} mutate={mutate} />;
 }
 
 interface BodyProps {
   data: OrderRoomState;
+  mutate: KeyedMutator<OrderRoomState>;
 }
 
-function Body({ data }: BodyProps) {
+function Body({ data, mutate }: BodyProps) {
   // 初期化処理で一番下にスクロール
   useEffect(() => {
     var element = document.documentElement;
     var bottom = element.scrollHeight - element.clientHeight;
     window.scroll(0, bottom);
+
+    streamOrderChats(data.orderRoom.orderRoomId, (orderChats) => {
+      mutate({ ...data, orderChats: orderChats });
+    });
   }, []);
 
   return (

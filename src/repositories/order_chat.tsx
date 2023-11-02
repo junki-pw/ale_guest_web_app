@@ -16,6 +16,7 @@ import {
   getDocs,
   getDocsFromCache,
   limit,
+  onSnapshot,
   orderBy,
   query,
   where,
@@ -57,9 +58,7 @@ const getQuery: (
   const q = mainQuery(orderRoomId, [limit(1)]);
 
   return getDocsFromCache(q).then((value) =>
-    value.docs.length == 0
-      ? mainQuery(orderRoomId, [])
-      : mainQuery(orderRoomId, [endAt(value.docs[0])])
+    mainQuery(orderRoomId, value.docs.length == 0 ? [] : [endAt(value.docs[0])])
   );
 };
 
@@ -72,3 +71,16 @@ export const getLocalOrderChats: (
     value.docs.map((e) => orderChatFromJson(e.data()))
   );
 };
+
+export async function streamOrderChats(
+  orderRoomId: string,
+  onNext: (orderChats: OrderChat[]) => void
+) {
+  return await getQuery(orderRoomId).then(async (query) =>
+    onSnapshot(query, async (snapshot) => {
+      console.log("オーダーチャットが更新されました");
+      const orderChats: OrderChat[] = await getLocalOrderChats(orderRoomId);
+      return onNext(orderChats);
+    })
+  );
+}
