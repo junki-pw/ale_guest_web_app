@@ -57,14 +57,19 @@ interface BodyProps {
 }
 
 function Body({ data, mutate }: BodyProps) {
-  // 初期化処理で一番下にスクロール
-  useEffect(() => {
+  /// 一番下にスクロール
+  function scrollBottom() {
     var element = document.documentElement;
     var bottom = element.scrollHeight - element.clientHeight;
     window.scroll(0, bottom);
+  }
+
+  useEffect(() => {
+    scrollBottom();
 
     streamOrderChats(data.orderRoom.orderRoomId, (orderChats) => {
       mutate({ ...data, orderChats: orderChats }, false);
+      scrollBottom();
     });
   }, []);
 
