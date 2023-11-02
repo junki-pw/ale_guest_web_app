@@ -67,7 +67,7 @@ function _Body({ data, mutate }: _BodyProps) {
         />
       ))}
 
-      <CheckoutBottomButton />
+      <CheckoutBottomButton data={data} />
     </main>
   );
 }
