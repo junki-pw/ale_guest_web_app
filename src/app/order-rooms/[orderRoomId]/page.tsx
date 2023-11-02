@@ -64,7 +64,7 @@ function Body({ data, mutate }: BodyProps) {
     window.scroll(0, bottom);
 
     streamOrderChats(data.orderRoom.orderRoomId, (orderChats) => {
-      mutate({ ...data, orderChats: orderChats });
+      mutate({ ...data, orderChats: orderChats }, false);
     });
   }, []);
 

@@ -5,8 +5,9 @@ import CategoryTile from "./components/category_tile";
 import MenusBottomButton from "./components/menus_bottom_button";
 import useSWR, { KeyedMutator } from "swr";
 import { menusFetcher } from "./fetcher";
-import { useMenusHooks } from "./hooks";
 import { MenusState } from "./state";
+import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
+import { useEffect } from "react";
 
 interface MenusProps {
   params: {
@@ -36,7 +37,12 @@ interface BodyProps {
 }
 
 function Body({ data, mutate }: BodyProps) {
-  const { orderCarts } = useMenusHooks(data.orderRoom.orderRoomId);
+  useEffect(() => {
+    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
+      mutate({ ...data, orderCarts: orderCarts }, false);
+    });
+  }, []);
+
   return (
     <main className="relative pb-40">
       {data.categories.map((category) => (
@@ -49,7 +55,7 @@ function Body({ data, mutate }: BodyProps) {
             <MenuTile
               key={index}
               menu={menu}
-              orderCarts={orderCarts}
+              orderCarts={data.orderCarts}
               category={category}
               orderRoomId={data.orderRoom.orderRoomId}
             />

@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import CheckoutBottomButton from "./components/checkout_bottom_button";
 import CheckoutNotServedMenuTile from "./components/checkout_not_served_menu_tile";
 import CheckoutUsersPaymentPart from "./components/checkout_users_payment_part";
@@ -8,6 +8,7 @@ import { checkoutFetcher } from "./fetcher";
 import { useEffect } from "react";
 import { CheckoutState } from "./state";
 import CheckoutOrdersPart from "./components/checkout_orders_part";
+import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 
 interface CheckoutProps {
   params: {
@@ -22,16 +23,27 @@ export default function CheckoutPage(props: CheckoutProps) {
     () => checkoutFetcher(orderRoomId)
   );
 
-  useEffect(() => {
-    //todo firestore を監視している処理をリッスンしたら useSWR にデータを突っ込んであげる
-    //todo order_room の userIds に変化があったら invalidate する
-  });
-
   if (isLoading) {
     return <div>Loading...</div>;
   } else if (data == undefined || error) {
     return <div>Error...</div>;
   }
+
+  // return Body({ data, mutate });
+  return <_Body data={data} mutate={mutate} />;
+}
+
+interface _BodyProps {
+  data: CheckoutState;
+  mutate: KeyedMutator<CheckoutState>;
+}
+
+function _Body({ data, mutate }: _BodyProps) {
+  useEffect(() => {
+    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
+      mutate({ ...data, orderCarts: orderCarts }, false);
+    });
+  }, []);
 
   return (
     <main className="mb-40 relative">

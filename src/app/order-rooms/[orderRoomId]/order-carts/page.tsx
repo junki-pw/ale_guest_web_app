@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import OrderCartTile from "./components/order_cart_tile";
-import useSWR from "swr";
+import useSWR, { KeyedMutator, mutate } from "swr";
 import { orderCartFetcher } from "./fetcher";
 import { useOrderCartHooks } from "./hooks";
 import OrderCartBottom from "./components/order_cart_bottom";
+import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
+import { OrderCartState } from "./state";
 
 interface OrderCartPageProps {
   params: {
@@ -25,6 +27,21 @@ export default function OrderCartPage(props: OrderCartPageProps) {
   } else if (error || data == undefined) {
     return <div>Error...</div>;
   }
+
+  return <_Body data={data} mutate={mutate} />;
+}
+
+interface _BodyProps {
+  data: OrderCartState;
+  mutate: KeyedMutator<OrderCartState>;
+}
+
+function _Body({ data, mutate }: _BodyProps) {
+  useEffect(() => {
+    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
+      mutate({ ...data, orderCarts: orderCarts }, false);
+    });
+  }, []);
 
   return (
     <div className="relative flex flex-col mb-[120px]">
