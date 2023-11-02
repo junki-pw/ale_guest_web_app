@@ -37,7 +37,7 @@ export const getTodayNormalBHs: (
 };
 
 /// 曜日（略）を取得
-const convertWeekDayString: (currentDateTime: Date) => string | null = (
+export const convertWeekDayString: (currentDateTime: Date) => string | null = (
   currentDateTime: Date
 ) => {
   switch (currentDateTime.getDay()) {

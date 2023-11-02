@@ -1,6 +1,8 @@
 import React from "react";
 import { OrderCartState } from "../state";
 import { calcOrdersAmount } from "@/services/calc/order_cart";
+import { confirmOrderCart } from "@/repositories/order_cart";
+import { useCurrentUser } from "@/hooks/current_user";
 
 interface OrderCartBottomProps {
   data: OrderCartState;
@@ -16,7 +18,18 @@ export default function OrderCartBottom({ data }: OrderCartBottomProps) {
     currentDateTime: data.currentDateTime,
   });
 
-  const handleSendOrder = () => {};
+  const { currentUser } = useCurrentUser();
+
+  const handleConfirmOrder = async () => {
+    const confirmMessage: string = "オーダーを送信しても宜しいですか？";
+    if (confirm(confirmMessage)) {
+      await confirmOrderCart({
+        orderCarts: data.orderCarts,
+        orderRoom: data.orderRoom,
+        currentUser: currentUser!,
+      }).catch((e) => alert(e));
+    }
+  };
 
   return (
     <div className="fixed bottom-0 flex w-full p-4 bg-white">
@@ -29,7 +42,7 @@ export default function OrderCartBottom({ data }: OrderCartBottomProps) {
       <div className="w-6"></div>
       <button
         className="grow bg-orange-400 text-white font-bold text-center rounded-md"
-        onClick={handleSendOrder}
+        onClick={handleConfirmOrder}
       >
         注文を送信する
       </button>
