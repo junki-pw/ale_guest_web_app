@@ -1,15 +1,18 @@
+import { KeyedMutator } from "swr";
 import { CheckoutState } from "../state";
 import CheckoutTypes from "./checkout_user_payment/checkout_types";
 import CheckoutUserTile from "./checkout_user_payment/checkout_user_tile";
 
 interface CheckoutUsersPaymentPart {
   data: CheckoutState;
+  mutate: KeyedMutator<CheckoutState>;
 }
 
 const _CheckoutType = ["splitBil", "host", "custom"];
 
 export default function CheckoutUsersPaymentPart({
   data,
+  mutate,
 }: CheckoutUsersPaymentPart) {
   return (
     <div className="mt-4">
@@ -22,7 +25,12 @@ export default function CheckoutUsersPaymentPart({
       </div>
 
       {data.orderRoomUsers.map((e) => (
-        <CheckoutUserTile key={e.userId} data={data} orderRoomUser={e} />
+        <CheckoutUserTile
+          key={e.userId}
+          data={data}
+          orderRoomUser={e}
+          mutate={mutate}
+        />
       ))}
       <div className="w-full bg-gray-200 h-[6px] mt-4"></div>
     </div>
