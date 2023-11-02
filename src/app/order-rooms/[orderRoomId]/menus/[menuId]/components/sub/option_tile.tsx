@@ -54,14 +54,16 @@ export default function MenuDetailsOptionTile({
       className="w-full items-start px-4 py-2.5"
       onClick={handleCheckBoxClicked}
     >
-      <div className="flex">
+      <div className="flex items-center">
         <input
           className="mr-3"
           type="radio"
           checked={isContained}
           onChange={handleCheckBoxClicked}
         />
-        <p className="text-black font-bold text-sm grow">{menu.menuName}</p>
+        <p className="text-black font-bold text-sm grow text-start">
+          {menu.menuName}
+        </p>
         <p className="ml-3">¥ {price}</p>
       </div>
     </button>
