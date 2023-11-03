@@ -99,7 +99,7 @@ export default function CheckoutUserTile({
         ...data,
         customAmount: {
           ...data.customAmount,
-          [`${orderRoomUser.userId}`]: inputValue,
+          [`${orderRoomUser.userId}`]: inputValue.length == 0 ? 0 : inputValue,
         },
       },
       false
@@ -108,6 +108,7 @@ export default function CheckoutUserTile({
 
   return (
     <div className="flex w-full items-center px-4 py-1.5">
+      {/* 画像 */}
       <Image
         className="rounded-full mr-1"
         src={orderRoomUser.userIcon}
@@ -115,7 +116,9 @@ export default function CheckoutUserTile({
         height={32}
         width={32}
       ></Image>
+
       {isSelected ? (
+        // TextField
         <input
           type="number"
           className="grow mr-3 border-2 rounded"
@@ -123,12 +126,21 @@ export default function CheckoutUserTile({
           onChange={handleInputValueChanged}
         />
       ) : (
-        <h1 className="ml-1 mr-3 grow text-left">{orderRoomUser.userName}</h1>
+        // ユーザー名
+        <h1 className="ml-1 mr-3 grow text-left truncate">
+          {orderRoomUser.userName}
+        </h1>
       )}
-      <h1 className="font-bold">¥ {amountPerPerson.toLocaleString()}</h1>
+
+      {/* 料金 */}
+      <h1 className="font-bold flex-none">
+        ¥ {amountPerPerson.toLocaleString()}
+      </h1>
+
+      {/* 変更・保存 */}
       {data.checkoutType == "custom" && (
         <button
-          className="ml-4 text-gray-400"
+          className="ml-4 text-gray-400 flex-none"
           onClick={
             isSelected ? handleUpdateCustomAmount : handleUpdateIsSelected
           }

@@ -19,15 +19,17 @@ export default function CheckoutMenuOptionTile({
 
   return (
     <div className="flex justify-between items-center mb-3">
-      <div>
-        <h2>{menu.menuName}</h2>
+      <div className="mr-3">
+        <h2 className="grow">{menu.menuName}</h2>
         {optionTexts == null ? (
           <div></div>
         ) : (
           <p className="mt-1 text-xs text-gray-400">{optionTexts}</p>
         )}
       </div>
-      <h1>¥ {(orderCart.orderedMenuAmount ?? 0).toLocaleString()}</h1>
+      <h1 className="flex-none">
+        ¥ {(orderCart.orderedMenuAmount ?? 0).toLocaleString()}
+      </h1>
     </div>
   );
 }

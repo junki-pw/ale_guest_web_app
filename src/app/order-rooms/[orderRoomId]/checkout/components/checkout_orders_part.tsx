@@ -109,11 +109,11 @@ interface _Tile {
 
 const _Tile = ({ title, desc, amount }: _Tile) => {
   return (
-    <div className="mb-3 flex justify-between">
-      <p>
+    <div className="mb-3 flex w-full">
+      <p className="grow truncate">
         {title} {desc}
       </p>
-      <p>¥ {amount.toLocaleString()}</p>
+      <p className="flex-none">¥ {amount.toLocaleString()}</p>
     </div>
   );
 };
