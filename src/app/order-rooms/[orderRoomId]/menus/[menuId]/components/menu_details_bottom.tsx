@@ -14,7 +14,9 @@ interface MenuDetailsBottomProps {
 
 export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
   const router = useRouter();
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(
+    data.orderCart == null ? 1 : data.orderCart.userIds.length
+  );
 
   function decrement() {
     if (quantity > 1) {
@@ -56,6 +58,7 @@ export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
       options: data.options,
       menus: data.menus,
       selectedOptions: data.selectedOptionMenus,
+      previousOrderCart: data.orderCart,
     };
     await saveOrderCart(saveOrderCartProps)
       .then((value) => router.back())

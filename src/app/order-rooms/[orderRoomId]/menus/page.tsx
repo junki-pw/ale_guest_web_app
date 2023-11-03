@@ -29,7 +29,7 @@ export default function MenusPage(params: MenusProps) {
     return <div>Error...</div>;
   }
 
-  return <Body data={data} mutate={mutate} />;
+  return <_Body data={data} mutate={mutate} />;
 }
 
 interface BodyProps {
@@ -37,7 +37,7 @@ interface BodyProps {
   mutate: KeyedMutator<MenusState>;
 }
 
-function Body({ data, mutate }: BodyProps) {
+function _Body({ data, mutate }: BodyProps) {
   useEffect(() => {
     streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
       mutate({ ...data, orderCarts: orderCarts }, false);
@@ -47,8 +47,6 @@ function Body({ data, mutate }: BodyProps) {
   const categories: MenuCategory[] = [...data.categories].sort(
     (a, b) => a.categoryIndex - b.categoryIndex
   );
-
-  const list = [1, 1, 1, 1];
 
   return (
     <main className="relative pb-40">

@@ -21,7 +21,7 @@ import { OrderCart } from "@/domain/order_cart";
 
 interface orderRoomDetailsFetcherProps {
   orderRoomId: string;
-  menuId: string;
+  menuId: string | null;
   orderCartId: string | null;
 }
 
@@ -41,14 +41,14 @@ export const menuDetailsDetailsFetcher: ({
   const shop: Shop = await getShopById(orderRoom.shopId);
   const menus: ShopMenu[] = await getMenus(shop.shopId);
   const categories: MenuCategory[] = await getCategories(shop.shopId);
+  const orderCart: OrderCart | null =
+    orderCartId == null ? null : await getOrderCartById(orderCartId);
   const menu: ShopMenu = await getMenuById({
-    menuId: menuId,
+    menuId: orderCart?.menuId ?? menuId!,
     shopId: shop.shopId,
   });
   const options: MenuOption[] =
     menu.optionIds.length == 0 ? [] : await getOptions(shop.shopId);
-  const orderCart: OrderCart | null =
-    orderCartId == null ? null : await getOrderCartById(orderCartId);
 
   const isCart: boolean = orderCart != null;
 

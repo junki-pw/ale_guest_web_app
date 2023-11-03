@@ -166,6 +166,7 @@ interface saveOrderCartProps {
   options: MenuOption[];
   menus: ShopMenu[];
   selectedOptions: {};
+  previousOrderCart: OrderCart | null;
 }
 
 export async function saveOrderCart({
@@ -177,6 +178,7 @@ export async function saveOrderCart({
   options,
   menus,
   selectedOptions,
+  previousOrderCart,
 }: saveOrderCartProps) {
   const orderedMenuAmount = calcMenuAmount({
     menu: searchMenu(menus, menuId),
@@ -189,16 +191,24 @@ export async function saveOrderCart({
   });
 
   //todo 必須オプションチェック
-  const orderCart = createOrderCart({
-    orderCartId: uuidv4(),
-    orderRoomId: orderRoom.orderRoomId,
-    shop,
-    userIds: userIds as any,
-    selectedOptions,
-    menuId,
-    currentUser,
-    orderedMenuAmount,
-  });
+  const orderCart =
+    previousOrderCart == null
+      ? createOrderCart({
+          orderCartId: uuidv4(),
+          orderRoomId: orderRoom.orderRoomId,
+          shop,
+          userIds: userIds as any,
+          selectedOptions,
+          menuId,
+          currentUser,
+          orderedMenuAmount,
+        })
+      : {
+          ...previousOrderCart,
+          options: selectedOptions,
+          orderedMenuAmount,
+          updatedAt: serverTimestamp(),
+        };
 
   /// 必須オプションで選択しているかチェック
   for (const [optionId, menuIds] of Object.entries(orderCart.options)) {

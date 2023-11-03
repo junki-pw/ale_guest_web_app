@@ -30,7 +30,11 @@ export function MenuTile({
   }
 
   function handleClicked() {
-    router.push(`/order-rooms/${orderRoomId}/menus/${menu.menuId}`);
+    const path =
+      orderCart == null
+        ? `/order-rooms/${orderRoomId}/menus/${menu.menuId}`
+        : `/order-rooms/${orderRoomId}/order-carts/${orderCart.orderCartId}`;
+    router.push(path);
   }
 
   const isApplyUnLimitedPlan = checkThisMenuIsApplyUnLimitedPlan({

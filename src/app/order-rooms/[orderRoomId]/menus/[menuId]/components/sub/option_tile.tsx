@@ -18,7 +18,9 @@ export default function MenuDetailsOptionTile({
   data,
 }: _OptionTileProps) {
   const { mutate } = useSWR(
-    `order-rooms/${data.orderRoom.orderRoomId}/menus/${data.menu.menuId}`
+    data.orderCart != null
+      ? `order-rooms/${data.orderRoom.orderRoomId}/order-carts/${data.orderCart.orderCartId}`
+      : `order-rooms/${data.orderRoom.orderRoomId}/menus/${data.menu.menuId}`
   );
 
   const menu = searchMenu(data.menus, menuId);
@@ -35,10 +37,14 @@ export default function MenuDetailsOptionTile({
       option,
     });
 
+    console.log(menuIds);
+
     const selectedOptionMenus = {
       ...data.selectedOptionMenus,
       [`${optionId}`]: menuIds,
     };
+
+    console.log(selectedOptionMenus);
 
     mutate(
       {
@@ -47,6 +53,8 @@ export default function MenuDetailsOptionTile({
       },
       false
     );
+
+    console.log(data.selectedOptionMenus);
   };
 
   return (
@@ -96,14 +104,14 @@ function _checkBoxClicked({
       }
     }
     return menuIds;
-  } else {
-    if (option.maxSelectCount == 1) {
-      // 最大1つだけ選択できる場合
-      return [menuId];
-    } else if (option.maxSelectCount <= selectedMenuIds.length) {
-      // 最大選択個数よりも多い場合
-      return selectedMenuIds;
-    }
-    return [...selectedMenuIds, menuId];
   }
+
+  if (option.maxSelectCount == 1) {
+    // 最大1つだけ選択できる場合
+    return [menuId];
+  } else if (option.maxSelectCount <= selectedMenuIds.length) {
+    // 最大選択個数よりも多い場合
+    return selectedMenuIds;
+  }
+  return [...selectedMenuIds, menuId];
 }
