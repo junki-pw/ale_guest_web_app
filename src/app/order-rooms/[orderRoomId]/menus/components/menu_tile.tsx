@@ -1,14 +1,18 @@
 import { MenuCategory } from "@/domain/menu_category";
 import { OrderCart } from "@/domain/order_cart";
 import { ShopMenu } from "@/domain/shop_menu";
+import { checkThisMenuIsApplyUnLimitedPlan } from "@/services/convert/check_this_menu_is_apply_un_limited_plan";
+import { checkThisOrderCartIsApplyUnLimitedPlanProvider } from "@/services/convert/check_this_order_cart_is_apply_un_limited_plan";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { MenusState } from "../state";
 
 interface OrderCartProps {
   orderCart: OrderCart | null;
   menu: ShopMenu;
   category: MenuCategory;
   orderRoomId: string;
+  data: MenusState;
 }
 
 export function MenuTile({
@@ -16,6 +20,7 @@ export function MenuTile({
   orderCart,
   category,
   orderRoomId,
+  data,
 }: OrderCartProps) {
   const router = useRouter();
   /// データを含まない場合はスルー
@@ -26,6 +31,20 @@ export function MenuTile({
   function handleClicked() {
     router.push(`/order-rooms/${orderRoomId}/menus/${menu.menuId}`);
   }
+
+  const isApplyUnLimitedPlan = checkThisMenuIsApplyUnLimitedPlan({
+    menu,
+    menus: data.menus,
+    orderCartsContainedUnLimitedMenu: data.unLimitedPlanMenuOrderCarts,
+    currentDateTime: data.currentDateTime,
+  });
+
+  const amount: number =
+    orderCart == null ? menu.price : orderCart.orderedMenuAmount!;
+
+  // 売り切れチェック
+  const soldOut: boolean =
+    menu.isLimited && menu.defaultMenuCount - menu.todayOrderedCount <= 0;
 
   return (
     <li className="list-none">
@@ -42,7 +61,24 @@ export function MenuTile({
           <h2 className="mb-1.5 text-sm text-gray-500 line-clamp-2">
             {menu.menuDescription}
           </h2>
-          <h2 className="text-sm text-orange-600">¥890</h2>
+          <div className="flex">
+            <h2
+              className={`text-sm ${
+                isApplyUnLimitedPlan ? "text-green-500" : "text-orange-600"
+              }`}
+            >
+              {isApplyUnLimitedPlan
+                ? "放題プラン適用"
+                : `¥${amount.toLocaleString()}`}
+            </h2>
+            {menu.isLimited && (
+              <h1 className="text-sm ml-3 font-bold text-rose-600">
+                {soldOut
+                  ? "売り切れ"
+                  : `残り{menu.defaultMenuCount - menu.todayOrderedCount}個`}
+              </h1>
+            )}
+          </div>
         </div>
         {menu.menuImageUrl != null && (
           <Image

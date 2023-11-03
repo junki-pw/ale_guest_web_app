@@ -75,6 +75,7 @@ function Body({ data, mutate }: BodyProps) {
                     orderCart={null}
                     category={category}
                     orderRoomId={data.orderRoom.orderRoomId}
+                    data={data}
                   />
                   {data.orderCarts.map((orderCart, index) => {
                     if (
@@ -91,6 +92,7 @@ function Body({ data, mutate }: BodyProps) {
                         orderCart={orderCart}
                         category={category}
                         orderRoomId={data.orderRoom.orderRoomId}
+                        data={data}
                       />
                     );
                   })}
