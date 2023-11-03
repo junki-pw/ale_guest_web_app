@@ -20,6 +20,8 @@ export default function OrderHistoryCartTile({
     menus: data.menus,
   });
 
+  const isServed = orderCart.serveStatus == "served";
+
   return (
     <button className="px-4 py-3 w-full text-left">
       <h1 className="text-md font-bold">
@@ -34,7 +36,7 @@ export default function OrderHistoryCartTile({
         <p className="text-orange-400">
           ¥ {orderCart.orderedMenuAmount?.toLocaleString()}
         </p>
-        <p className="text-gray-400">
+        <p className={`${isServed ? "text-green-500" : "text-gray-400"}`}>
           {orderCart.serveStatus == "served" ? "配膳済み" : "未配膳"}
         </p>
       </div>
