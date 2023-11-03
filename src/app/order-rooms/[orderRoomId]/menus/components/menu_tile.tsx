@@ -6,6 +6,7 @@ import { checkThisOrderCartIsApplyUnLimitedPlanProvider } from "@/services/conve
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MenusState } from "../state";
+import { convertOptionTexts } from "@/services/convert/option_text";
 
 interface OrderCartProps {
   orderCart: OrderCart | null;
@@ -45,6 +46,14 @@ export function MenuTile({
   // 売り切れチェック
   const soldOut: boolean =
     menu.isLimited && menu.defaultMenuCount - menu.todayOrderedCount <= 0;
+
+  const optionTexts: string | null =
+    orderCart == null
+      ? null
+      : convertOptionTexts({
+          orderCart,
+          menus: data.menus,
+        });
 
   return (
     <li className="list-none">
@@ -92,6 +101,11 @@ export function MenuTile({
           ></Image>
         )}
       </button>
+      {optionTexts != null && optionTexts.length != 0 && (
+        <h1 className="text-xs font-bold px-4 py-2 text-orange-500 bg-orange-100">
+          {optionTexts}
+        </h1>
+      )}
     </li>
   );
 }
