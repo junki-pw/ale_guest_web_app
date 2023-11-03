@@ -6,6 +6,7 @@ import { saveOrderCart } from "@/repositories/order_cart";
 import { useRouter } from "next/navigation";
 import { AppUser } from "@/domain/user";
 import { useCurrentUser } from "@/hooks/current_user";
+import { checkThisMenuIsApplyUnLimitedPlan } from "@/services/convert/check_this_menu_is_apply_un_limited_plan";
 
 interface MenuDetailsBottomProps {
   data: MenuDetailsState;
@@ -21,6 +22,13 @@ export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
     }
   }
 
+  const isApplyUnLimitedPlan: boolean = checkThisMenuIsApplyUnLimitedPlan({
+    menu: data.menu,
+    menus: data.menus,
+    orderCartsContainedUnLimitedMenu: data.unLimitedPlanOrderCarts,
+    currentDateTime: data.currentDateTime,
+  });
+
   const amount: number = calcMenuAmount({
     menu: data.menu,
     optionList: data.options,
@@ -31,7 +39,6 @@ export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
     discounts: [],
   });
 
-  // const { data: currentUser } = useSWR<AppUser>("currentUser");
   const { currentUser } = useCurrentUser();
 
   async function handleSaveOrderCart() {
@@ -65,10 +72,13 @@ export default function MenuDetailsBottom({ data }: MenuDetailsBottomProps) {
         <_Button isMinus={false} onClick={() => setQuantity(quantity + 1)} />
       </div>
       <button
-        className="ml-3 bg-orange-500 py-3 grow rounded-lg text-white font-bold"
+        className={`ml-3 py-3 grow rounded-lg text-white font-bold ${
+          isApplyUnLimitedPlan ? "bg-green-500" : "bg-orange-500"
+        }`}
         onClick={handleSaveOrderCart}
       >
-        カートに追加・¥{amount.toLocaleString()}
+        カートに追加・
+        {isApplyUnLimitedPlan ? "¥0" : `¥${amount.toLocaleString()}`}
       </button>
     </div>
   );
