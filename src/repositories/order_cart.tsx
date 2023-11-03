@@ -390,7 +390,6 @@ export async function deleteOrderCart({
       deleteUserName: currentUser.userName,
       deleteUserIcon: currentUser.userIcon,
     });
-    console.log("test");
   });
 }
 

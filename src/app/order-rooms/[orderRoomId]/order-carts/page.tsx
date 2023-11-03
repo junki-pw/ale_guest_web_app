@@ -7,6 +7,7 @@ import { useOrderCartHooks } from "./hooks";
 import OrderCartBottom from "./components/order_cart_bottom";
 import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 import { OrderCartState } from "./state";
+import { OrderCart } from "@/domain/order_cart";
 
 interface OrderCartPageProps {
   params: {
@@ -43,9 +44,13 @@ function _Body({ data, mutate }: _BodyProps) {
     });
   }, []);
 
+  const orderCarts: OrderCart[] = [
+    ...data.orderCarts.filter((element) => element.createdAt != null),
+  ].sort((a, b) => (a.createdAt! < b.createdAt! ? 1 : -1));
+
   return (
     <div className="relative flex flex-col mb-[120px]">
-      {data.orderCarts.map((orderCart) => (
+      {orderCarts.map((orderCart) => (
         <OrderCartTile
           key={orderCart.orderCartId}
           orderCart={orderCart}

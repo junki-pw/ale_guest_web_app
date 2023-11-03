@@ -55,10 +55,12 @@ export default function OrderCartTile({ data, orderCart }: OrderCartTileProps) {
   }
 
   async function handleDeleteOrderCart() {
+    console.log(orderCart.orderCartId);
+
     // 削除処理
-    await deleteOrderCart({ currentUser: currentUser!, orderCart }).catch((e) =>
-      alert(e)
-    );
+    await deleteOrderCart({ currentUser: currentUser!, orderCart })
+      .then((value) => alert("削除が完了しました"))
+      .catch((e) => alert(e));
   }
 
   return (
