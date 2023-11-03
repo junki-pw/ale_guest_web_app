@@ -29,13 +29,15 @@ export default function MenuDetailsOptionTiles({
         </p>
       </div>
 
-      {Object.keys(option.menus).map((key, index) => {
+      {Object.keys(option.optionMenuIds).map((key, index) => {
+        const menuId: string = option.optionMenuIds[index];
+        const price: number = (option.menus as any)[menuId] ?? 0;
         return (
           <MenuDetailsOptionTile
             key={index}
             optionId={optionId}
-            menuId={key}
-            price={(option.menus as any)[key] ?? 0}
+            menuId={menuId}
+            price={price}
             data={data}
           />
         );
