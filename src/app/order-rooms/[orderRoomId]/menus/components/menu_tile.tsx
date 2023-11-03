@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface OrderCartProps {
-  orderCarts: OrderCart[];
+  orderCart: OrderCart | null;
   menu: ShopMenu;
   category: MenuCategory;
   orderRoomId: string;
@@ -13,7 +13,7 @@ interface OrderCartProps {
 
 export function MenuTile({
   menu,
-  orderCarts,
+  orderCart,
   category,
   orderRoomId,
 }: OrderCartProps) {
@@ -30,7 +30,9 @@ export function MenuTile({
   return (
     <li className="list-none">
       <button
-        className="flex w-full justify-between h-auto px-4 py-3 border-l-4 border-gray-300 text-left bg-white"
+        className={`flex w-full justify-between h-auto px-4 py-3 text-left bg-white ${
+          orderCart != null && "border-l-4 border-orange-400"
+        }`}
         onClick={handleClicked}
       >
         <div>

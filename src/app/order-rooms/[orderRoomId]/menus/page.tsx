@@ -8,6 +8,7 @@ import { menusFetcher } from "./fetcher";
 import { MenusState } from "./state";
 import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 import { useEffect } from "react";
+import { MenuCategory } from "@/domain/menu_category";
 
 interface MenusProps {
   params: {
@@ -43,25 +44,62 @@ function Body({ data, mutate }: BodyProps) {
     });
   }, []);
 
+  const categories: MenuCategory[] = [...data.categories].sort(
+    (a, b) => a.categoryIndex - b.categoryIndex
+  );
+
+  const list = [1, 1, 1, 1];
+
   return (
     <main className="relative pb-40">
-      {data.categories.map((category) => (
-        <div key={category.categoryId}>
-          {/* カテゴリー */}
-          <CategoryTile key={category.categoryId} category={category} />
+      {categories.map((category, index) => {
+        const containedIndex = data.menus.findIndex((element) =>
+          (element.categoryIds as any).includes(category.categoryId)
+        );
 
-          {/* メニュータイル */}
-          {data.menus.map((menu, index) => (
-            <MenuTile
-              key={index}
-              menu={menu}
-              orderCarts={data.orderCarts}
-              category={category}
-              orderRoomId={data.orderRoom.orderRoomId}
-            />
-          ))}
-        </div>
-      ))}
+        if (containedIndex == -1) {
+          return <div key={index}></div>;
+        }
+
+        return (
+          <div key={index}>
+            {/* カテゴリー */}
+            <CategoryTile key={category.categoryId} category={category} />
+
+            {/* メニュータイル */}
+            {data.menus.map((menu, menuIndex) => {
+              return (
+                <div key={menuIndex}>
+                  <MenuTile
+                    menu={menu}
+                    orderCart={null}
+                    category={category}
+                    orderRoomId={data.orderRoom.orderRoomId}
+                  />
+                  {data.orderCarts.map((orderCart, index) => {
+                    if (
+                      orderCart.menuId != menu.menuId ||
+                      orderCart.orderId != null
+                    ) {
+                      return <div key={orderCart.orderCartId}></div>;
+                    }
+
+                    return (
+                      <MenuTile
+                        key={orderCart.orderCartId}
+                        menu={menu}
+                        orderCart={orderCart}
+                        category={category}
+                        orderRoomId={data.orderRoom.orderRoomId}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
 
       <MenusBottomButton data={data} />
     </main>
