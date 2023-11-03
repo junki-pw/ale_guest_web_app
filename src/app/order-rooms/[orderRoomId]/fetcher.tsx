@@ -11,6 +11,8 @@ import {
 import { getOrderRoomById } from "@/repositories/order_room";
 import { getShopById } from "@/repositories/shop";
 import { getOrderChats } from "@/repositories/order_chat";
+import { ShopSeat } from "@/domain/shop_seat";
+import { getSeatById } from "@/repositories/shop_seat";
 
 export const orderRoomFetcher: (
   orderRoomId: string
@@ -42,10 +44,12 @@ export const orderRoomFetcher: (
   console.log("orderChats length: " + orderChats.length);
 
   /// unRead count を0にする
+  const seat: ShopSeat = await getSeatById(shop.shopId, orderRoom.seatId);
 
   return {
     orderRoom: orderRoom,
     shop: shop,
     orderChats: orderChats,
+    seat: seat,
   };
 };

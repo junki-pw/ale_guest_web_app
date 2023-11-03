@@ -1,14 +1,16 @@
 import {
   IconDefinition,
+  faBell,
   faBookOpen,
   faCashRegister,
   faClockRotateLeft,
-  faGift,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { OrderRoomState } from "../state";
+import { callStaffFromOrderRoom } from "@/repositories/call_staff";
+import { useCurrentUser } from "@/hooks/current_user";
 
 interface OrderRoomBottomProps {
   data: OrderRoomState;
@@ -21,7 +23,7 @@ export default function OrderRoomBottom({ data }: OrderRoomBottomProps) {
       <div className="w-2"></div>
       <_IconTile iconTileType={"history"} data={data} />
       <div className="w-2"></div>
-      <_IconTile iconTileType={"tips"} data={data} />
+      <_IconTile iconTileType={"callStaffs"} data={data} />
       <div className="w-2"></div>
       <_IconTile iconTileType={"checkout"} data={data} />
     </div>
@@ -47,9 +49,9 @@ const _IconTile = ({ iconTileType, data }: _IconTileProps) => {
       icon = faClockRotateLeft;
       label = "注文履歴";
       break;
-    case "tips":
-      icon = faGift;
-      label = "チップ";
+    case "callStaffs":
+      icon = faBell;
+      label = "店員を呼ぶ";
       break;
     default:
       icon = faCashRegister;
@@ -58,7 +60,9 @@ const _IconTile = ({ iconTileType, data }: _IconTileProps) => {
 
   const baseUrl: string = `/order-rooms/${data.orderRoom.orderRoomId}`;
 
-  function handleClicked() {
+  const { currentUser } = useCurrentUser();
+
+  async function handleClicked() {
     switch (iconTileType) {
       case "menu":
         router.push(`${baseUrl}/menus`);
@@ -66,7 +70,16 @@ const _IconTile = ({ iconTileType, data }: _IconTileProps) => {
       case "history":
         router.push(`${baseUrl}/order-histories`);
         break;
-      case "tips":
+      case "callStaffs":
+        const confirmMessage: string = "スタッフを呼びますか？";
+        if (confirm(confirmMessage)) {
+          await callStaffFromOrderRoom({
+            orderRoomId: data.orderRoom.orderRoomId,
+            shopId: data.orderRoom.shopId,
+            seatCommonName: data.seat.seatCommonName,
+            currentUser: currentUser!,
+          }).then((value) => alert("店員を呼びました"));
+        }
         break;
       default:
         router.push(`${baseUrl}/checkout`);

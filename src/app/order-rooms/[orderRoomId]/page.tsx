@@ -64,11 +64,18 @@ function Body({ data, mutate }: BodyProps) {
     window.scroll(0, bottom);
   }
 
+  // Sleep関数
+  function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   useEffect(() => {
     scrollBottom();
 
-    streamOrderChats(data.orderRoom.orderRoomId, (orderChats) => {
+    streamOrderChats(data.orderRoom.orderRoomId, async (orderChats) => {
       mutate({ ...data, orderChats: orderChats }, false);
+      // リッスンした時にも一番下にスクロールされる
+      await sleep(500);
       scrollBottom();
     });
   }, []);
