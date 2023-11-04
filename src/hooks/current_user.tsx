@@ -1,25 +1,33 @@
+import { usersCollection } from "@/constants/firebase";
 import { AppUser, appUserFromJson } from "@/domain/user";
-import { auth } from "@/providers/firebase";
-import { streamCurrentUser } from "@/repositories/user";
-import { useState, useEffect } from "react";
+import { auth, db } from "@/providers/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+import useSWRSubscription, { SWRSubscriptionOptions } from "swr/subscription";
 
 export const useCurrentUser = () => {
-  const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
-  const [initialUser, setInitialUser] = useState(true);
-
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user != null && initialUser) {
-        setInitialUser(false);
-        // ユーザーを監視する
-        streamCurrentUser((doc) => {
-          if (doc.data() != null) {
-            setCurrentUser(appUserFromJson(doc.data()!));
-          }
-        });
+  const { data, error } = useSWRSubscription(
+    "currentUser",
+    (key, { next }: SWRSubscriptionOptions<AppUser, any>) => {
+      const uid: string | undefined = auth.currentUser?.uid;
+      if (uid == undefined) {
+        next("error 発生");
+        return;
       }
-    });
-  });
 
-  return { currentUser };
+      const d = doc(db, usersCollection, uid);
+      const unSub = onSnapshot(d, (value) => {
+        if (value.data() != null) {
+          const user = appUserFromJson(value.data()!);
+          console.log("userId リッスン: " + user.userId);
+          next(null, user);
+        } else {
+          next("error 発生");
+        }
+      });
+
+      return () => unSub && unSub();
+    }
+  );
+
+  return { currentUser: data, error };
 };
