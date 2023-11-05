@@ -1,44 +1,83 @@
 import React from "react";
 import { CheckoutState } from "../state";
 import { useCurrentUser } from "@/hooks/current_user";
-import { sendCheck } from "@/repositories/order_payment";
+import { cancelOrderPayment, sendCheck } from "@/repositories/order_payment";
+import { OrderPayment } from "@/domain/order_payment";
+import { useCheckoutHooks } from "../fetcher";
+import { KeyedMutator } from "swr";
 
 interface CheckoutBottomButtonProps {
   data: CheckoutState;
+  mutate: KeyedMutator<CheckoutState>;
 }
 
 export default function CheckoutBottomButton({
   data,
+  mutate,
 }: CheckoutBottomButtonProps) {
   const { currentUser } = useCurrentUser();
+  const { paymentMap } = useCheckoutHooks({ data, mutate });
+
   if (data.orderRoom.hostId != currentUser?.userId) {
     return <div></div>;
   }
 
+  const latestOrderPayment: OrderPayment | null =
+    data.orderRoom.orderPaymentId == null
+      ? null
+      : (paymentMap as any)[data.orderRoom.orderPaymentId];
+
+  const isHavingOrderPayment: boolean = latestOrderPayment != null;
+
   async function handleSendCheck() {
-    await sendCheck({
-      orderCarts: data.orderCarts,
-      unLimitedMenuOrderCarts: data.orderCartsContainUnLimitedMenu,
-      menus: data.menus,
-      orderRoom: data.orderRoom,
-      shop: data.shop,
-      coverCharge: data.coverCharge,
-      orderRoomUsers: data.orderRoomUsers,
-      customAmount: data.customAmount,
-      checkoutType: data.checkoutType,
-      currentUser: currentUser!,
-    })
-      .then((value) => alert("ユーザー全員にお会計を送信しました"))
-      .catch((e) => alert(e));
+    const confirmMessage = "お会計を作成しますか？";
+    if (confirm(confirmMessage)) {
+      await sendCheck({
+        orderCarts: data.orderCarts,
+        unLimitedMenuOrderCarts: data.orderCartsContainUnLimitedMenu,
+        menus: data.menus,
+        orderRoom: data.orderRoom,
+        shop: data.shop,
+        coverCharge: data.coverCharge,
+        orderRoomUsers: data.orderRoomUsers,
+        customAmount: data.customAmount,
+        checkoutType: data.checkoutType,
+        currentUser: currentUser!,
+      })
+        .then((value) => {
+          alert("ユーザー全員にお会計を送信しました");
+          mutate();
+        })
+        .catch((e) => alert(e));
+    }
+  }
+
+  function handleCancelOrderPayment() {
+    if (latestOrderPayment != null) {
+      const message = "お会計をキャンセルしても宜しいですか？";
+      if (confirm(message)) {
+        cancelOrderPayment({
+          orderRoomId: data.orderRoom.orderRoomId,
+          orderPayment: latestOrderPayment,
+        }).then((value) => {
+          alert("お会計をキャンセルしました");
+          mutate();
+        });
+      }
+    }
   }
 
   return (
-    <div className="fixed bottom-3 px-4 w-full">
+    <div className="fixed bottom-0 py-3 px-4 w-full">
       <button
-        className="w-full bg-orange-400 py-3 rounded-lg font-bold text-white"
-        onClick={handleSendCheck}
+        className={`w-full py-3 rounded-lg font-bold text-white ${
+          isHavingOrderPayment ? "bg-black" : "bg-orange-400"
+        }`}
+        onClick={
+          isHavingOrderPayment ? handleCancelOrderPayment : handleSendCheck
+        }
       >
-        お会計を作成する
+        {isHavingOrderPayment ? "お会計をキャンセルする" : "お会計を作成する"}
       </button>
     </div>
   );

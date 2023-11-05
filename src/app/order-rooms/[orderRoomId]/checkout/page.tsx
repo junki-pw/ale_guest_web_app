@@ -4,7 +4,7 @@ import useSWR, { KeyedMutator } from "swr";
 import CheckoutBottomButton from "./components/checkout_bottom_button";
 import CheckoutNotServedMenuTile from "./components/checkout_not_served_menu_tile";
 import CheckoutUsersPaymentPart from "./components/checkout_users_payment_part";
-import { checkoutFetcher } from "./fetcher";
+import { checkoutFetcher, useCheckoutHooks } from "./fetcher";
 import { useEffect } from "react";
 import { CheckoutState } from "./state";
 import CheckoutOrdersPart from "./components/checkout_orders_part";
@@ -40,11 +40,7 @@ interface _BodyProps {
 }
 
 function _Body({ data, mutate }: _BodyProps) {
-  useEffect(() => {
-    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
-      mutate({ ...data, orderCarts: orderCarts }, false);
-    });
-  }, []);
+  useCheckoutHooks({ data, mutate });
 
   return (
     <main className="mb-40 relative">
@@ -68,7 +64,7 @@ function _Body({ data, mutate }: _BodyProps) {
         />
       ))}
 
-      <CheckoutBottomButton data={data} />
+      <CheckoutBottomButton data={data} mutate={mutate} />
     </main>
   );
 }

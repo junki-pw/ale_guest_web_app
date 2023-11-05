@@ -44,7 +44,9 @@ export default function OrderChatOrderPaymentMessage({
           <div className="text-white">
             <h2 className="mb-1">あなたのお支払い金額</h2>
             <div className="flex items-end">
-              <h1 className="text-5xl font-bold">{payer.amount}</h1>
+              <h1 className="text-5xl font-bold">
+                {payer.amount.toLocaleString()}
+              </h1>
               <p className="text-2xl">円</p>
             </div>
           </div>

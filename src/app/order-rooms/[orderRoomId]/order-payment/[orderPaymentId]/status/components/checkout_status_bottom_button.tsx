@@ -17,10 +17,12 @@ export const CheckoutStatuBottom = ({
     const confirmMessage =
       "全てのお会計待ちユーザーのステータスを現金支払いに変更しますが、宜しいですか？";
     if (confirm(confirmMessage)) {
-      await updateStatusToCash(data.orderPayment, data.payers).then((value) => {
-        alert("お会計待ちユーザーを全て現金支払いに変更しました");
-        mutate();
-      });
+      await updateStatusToCash(data.orderPayment, data.payers)
+        .then((value) => {
+          alert("お会計待ちユーザーを全て現金支払いに変更しました");
+          mutate();
+        })
+        .catch((e) => alert(e));
     }
   };
 

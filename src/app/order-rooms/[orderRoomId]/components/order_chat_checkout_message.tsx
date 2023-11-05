@@ -64,7 +64,9 @@ export default function OrderChatCheckoutMessage({
             <div className="text-white">
               <h2 className="mb-1">現金でのお支払い</h2>
               <div className="flex items-end">
-                <h1 className="text-5xl font-bold">{cashAmount}</h1>
+                <h1 className="text-5xl font-bold">
+                  {cashAmount.toLocaleString()}
+                </h1>
                 <p className="text-2xl">円</p>
               </div>
             </div>

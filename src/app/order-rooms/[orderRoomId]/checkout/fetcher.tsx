@@ -12,8 +12,15 @@ import { getOptions } from "@/repositories/menu_option";
 import { MenuOption } from "@/domain/shop_option";
 import { CoverCharge } from "@/domain/cover_charge";
 import { getCoverChargeById } from "@/repositories/cover_charge";
-import { getOrderCarts } from "@/repositories/order_cart";
+import {
+  getOrderCarts,
+  streamOrderCartsByOrderRoomId,
+} from "@/repositories/order_cart";
 import { getCurrentDateTime } from "@/repositories/server_timestamp";
+import { streamOrderPaymentsById } from "@/repositories/order_payment";
+import { useEffect, useState } from "react";
+import { KeyedMutator } from "swr";
+import useSWRSubscription from "swr/subscription";
 
 export const checkoutFetcher: (
   orderRoomId: string
@@ -46,3 +53,33 @@ export const checkoutFetcher: (
     currentDateTime: currentDateTime,
   };
 };
+
+interface UseCheckoutHooksProps {
+  data: CheckoutState;
+  mutate: KeyedMutator<CheckoutState>;
+}
+
+export function useCheckoutHooks({ data, mutate }: UseCheckoutHooksProps) {
+  const [paymentMap, setPaymentMap] = useState({});
+
+  useEffect(() => {
+    /// OrderCarts の監視
+    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
+      mutate({ ...data, orderCarts }, false);
+    });
+
+    /// OrderPayments の監視
+    streamOrderPaymentsById(data.orderRoom.orderRoomId, (orderPayments) => {
+      let paymentMap: {} = {};
+      for (const orderPayment of orderPayments) {
+        paymentMap = {
+          ...paymentMap,
+          [`${orderPayment.orderPaymentId}`]: orderPayment,
+        };
+      }
+      setPaymentMap(paymentMap);
+    });
+  }, []);
+
+  return { paymentMap };
+}
