@@ -1,6 +1,7 @@
 import { doc_not_found } from "@/constants/error";
 import {
   coverChargeCollection,
+  kOrderRoomId,
   orderCartsCollection,
   orderPaymentsCollection,
   orderRoomsCollection,
@@ -20,7 +21,10 @@ import {
   collection,
   doc,
   getDoc,
+  getDocFromServer,
   getDocs,
+  getDocsFromServer,
+  onSnapshot,
   query,
   runTransaction,
   serverTimestamp,
@@ -485,4 +489,32 @@ export async function cancelOrderPayment({
       updatedAt: serverTimestamp(),
     });
   });
+}
+
+export function streamOrderPaymentsById(
+  orderRoomId: string,
+  onNext: (value: OrderPayment[]) => void
+) {
+  const q = query(
+    collection(db, orderPaymentsCollection),
+    where("orderRoomId", "==", orderRoomId)
+  );
+
+  return onSnapshot(q, (value) => {
+    const orderPayments = value.docs.map((e) => orderPaymentFromJson(e.data()));
+    return onNext(orderPayments);
+  });
+}
+
+export async function getLocalOrderPaymentsById(
+  orderRoomId: string
+): Promise<OrderPayment[]> {
+  const q = query(
+    collection(db, orderPaymentsCollection),
+    where(kOrderRoomId, "==", orderRoomId)
+  );
+
+  return await getDocsFromServer(q).then((value) =>
+    value.docs.map((e) => orderPaymentFromJson(e.data()))
+  );
 }
