@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import MenuDetailsOptionTiles from "./components/option_tiles";
 import MenuDetailsBottom from "./components/menu_details_bottom";
 import useSWR, { KeyedMutator } from "swr";
 import { menuDetailsDetailsFetcher } from "./fetcher";
@@ -54,9 +53,6 @@ export function MenuDetailsBody({ data, mutate }: MenuDetailsBodyProps) {
       <MenuDetailsTitleDescPart data={data} />
 
       {/* オプション */}
-      {data.menu.optionIds.map((optionId, index) => (
-        <MenuDetailsOptionTiles key={index} optionId={optionId} data={data} />
-      ))}
 
       <MenuDetailsBottom data={data} />
     </main>
