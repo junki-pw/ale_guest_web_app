@@ -8,7 +8,7 @@ import OrderChatCheckoutMessage from "./components/order_chat_checkout_message";
 import OrderChatOrderPaymentMessage from "./components/order_chat_order_payment_message";
 import { v4 as uuidv4 } from "uuid";
 import useSWR, { KeyedMutator } from "swr";
-import { orderRoomFetcher } from "./fetcher";
+import { orderRoomFetcher, useOrderRoomHooks } from "./fetcher";
 import { OrderRoomState } from "./state";
 import CheckJoinPage from "./check-join/page";
 import { order_room_closed, user_not_joined } from "@/constants/error";
@@ -57,34 +57,17 @@ interface BodyProps {
 }
 
 function Body({ data, mutate }: BodyProps) {
-  /// 一番下にスクロール
-  function scrollBottom() {
-    var element = document.documentElement;
-    var bottom = element.scrollHeight - element.clientHeight;
-    window.scroll(0, bottom);
-  }
-
-  // Sleep関数
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  useOrderRoomHooks(data, mutate);
 
   useEffect(() => {
-    scrollBottom();
-
-    streamOrderChats(data.orderRoom.orderRoomId, async (orderChats) => {
-      mutate({ ...data, orderChats: orderChats }, false);
-      // リッスンした時にも一番下にスクロールされる
-      await sleep(500);
-      scrollBottom();
-    });
-  }, []);
+    console.log("新しい useEffect が参照されました");
+  }, [data.orderChats]);
 
   return (
     <main className="relative h-full mt-6">
       <div className="grow flex flex-col-reverse">
         {data!.orderChats.map((event) => (
-          <ChatTiles key={uuidv4()} orderChat={event} />
+          <ChatTiles key={uuidv4()} orderChat={event} data={data} />
         ))}
       </div>
       <div className="h-[87.5px]"></div>
@@ -95,9 +78,10 @@ function Body({ data, mutate }: BodyProps) {
 
 export interface OrderChatProps {
   orderChat: OrderChat;
+  data: OrderRoomState;
 }
 
-const ChatTiles = ({ orderChat }: OrderChatProps) => {
+const ChatTiles = ({ orderChat, data }: OrderChatProps) => {
   if (orderChat.messageType == "join") {
     return (
       <OrderChatJoinTile key={orderChat.orderChatId} orderChat={orderChat} />
@@ -117,6 +101,7 @@ const ChatTiles = ({ orderChat }: OrderChatProps) => {
         <OrderChatTextMessage
           key={orderChat.orderChatId}
           orderChat={orderChat}
+          data={data}
         />
       );
     case "orderPayment":
@@ -124,8 +109,7 @@ const ChatTiles = ({ orderChat }: OrderChatProps) => {
         <OrderChatOrderPaymentMessage
           key={orderChat.orderChatId}
           orderChat={orderChat}
-          orderRoomId={""}
-          orderPaymentId={""}
+          data={data}
         />
       );
     case "checkout":
@@ -133,8 +117,7 @@ const ChatTiles = ({ orderChat }: OrderChatProps) => {
         <OrderChatCheckoutMessage
           key={orderChat.orderChatId}
           orderChat={orderChat}
-          orderRoomId={""}
-          orderPaymentId={""}
+          data={data}
         />
       );
   }

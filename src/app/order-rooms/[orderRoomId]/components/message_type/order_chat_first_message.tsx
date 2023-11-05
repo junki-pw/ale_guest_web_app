@@ -4,10 +4,15 @@ import { QRCodeCanvas } from "qrcode.react";
 import PrimaryChatSenderInfo from "./sub/primary_chat_sender_info";
 import PrimaryChatText from "./sub/primary_chat_text";
 import copy from "clipboard-copy";
-import { v4 as uuidv4 } from "uuid";
-import { OrderChatProps } from "../../page";
+import { OrderChat } from "@/domain/order_chat";
 
-export default function OrderChatFirstMessage({ orderChat }: OrderChatProps) {
+interface OrderChatFirstMessageProps {
+  orderChat: OrderChat;
+}
+
+export default function OrderChatFirstMessage({
+  orderChat,
+}: OrderChatFirstMessageProps) {
   const handleCopy = () => {
     copy("https://google.com/").then(() => {
       alert("リンクをコピーしました");

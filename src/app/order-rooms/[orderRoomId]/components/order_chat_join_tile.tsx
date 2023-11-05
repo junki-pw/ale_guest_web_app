@@ -1,6 +1,12 @@
-import { OrderChatProps } from "../page";
+import { OrderChat } from "@/domain/order_chat";
 
-export default function OrderChatJoinTile({ orderChat }: OrderChatProps) {
+interface OrderChatJoinTileProps {
+  orderChat: OrderChat;
+}
+
+export default function OrderChatJoinTile({
+  orderChat,
+}: OrderChatJoinTileProps) {
   const createdAt: Date = orderChat.createdAt ?? new Date();
   const month: number = createdAt.getMonth();
   const day: number = createdAt.getDate();

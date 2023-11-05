@@ -8,4 +8,7 @@ export interface OrderRoomState {
   shop: Shop;
   orderChats: OrderChat[];
   seat: ShopSeat;
+  orderPaymentMap: {};
+  payerMap: {};
+  checkoutPayersMap: {};
 }
