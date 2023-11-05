@@ -7,7 +7,7 @@ interface OptionTileProps {
   data: MenuDetailsState;
 }
 
-function MenuDetailsOptionTiles({ optionId, data }: OptionTileProps) {
+export function MenuDetailsOptionTiles({ optionId, data }: OptionTileProps) {
   const option = searchOption(data.options, optionId);
 
   return (

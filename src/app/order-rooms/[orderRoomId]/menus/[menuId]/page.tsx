@@ -7,6 +7,8 @@ import { menuDetailsDetailsFetcher } from "./fetcher";
 import MenuDetailsImagePart from "./components/menu_details_image_part";
 import MenuDetailsTitleDescPart from "./components/title_desc_part";
 import { MenuDetailsState } from "./state";
+import { MenuDetailsOptionTiles } from "./components/option_tiles";
+import MenuDetailsBody from "@/components/menu_details_body";
 
 interface MenuDetailsProps {
   params: {
@@ -36,25 +38,4 @@ export default function MenuDetailsPage(props: MenuDetailsProps) {
   }
 
   return <MenuDetailsBody data={data} mutate={mutate} />;
-}
-
-interface MenuDetailsBodyProps {
-  data: MenuDetailsState;
-  mutate: KeyedMutator<MenuDetailsState>;
-}
-
-export function MenuDetailsBody({ data, mutate }: MenuDetailsBodyProps) {
-  return (
-    <main className="relative pt-4 pb-20">
-      {/* 画像 */}
-      <MenuDetailsImagePart data={data} />
-
-      {/* メニュー名・説明・料金 */}
-      <MenuDetailsTitleDescPart data={data} />
-
-      {/* オプション */}
-
-      <MenuDetailsBottom data={data} />
-    </main>
-  );
 }

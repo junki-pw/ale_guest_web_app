@@ -3,7 +3,7 @@ import React from "react";
 import useSWR from "swr";
 import { menuDetailsDetailsFetcher } from "../../menus/[menuId]/fetcher";
 import { MenuDetailsState } from "../../menus/[menuId]/state";
-import { MenuDetailsBody } from "../../menus/[menuId]/page";
+import MenuDetailsBody from "@/components/menu_details_body";
 
 interface OrderCartDetailsPageProps {
   params: {
