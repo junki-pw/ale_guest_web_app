@@ -24,10 +24,14 @@ export default function OrderCartBottom({ data }: OrderCartBottomProps) {
     const confirmMessage: string = "オーダーを送信しても宜しいですか？";
     if (confirm(confirmMessage)) {
       await confirmOrderCart({
-        orderCarts: data.orderCarts,
+        orderCarts: [...data.orderCarts].filter(
+          (element) => element.orderId == null
+        ),
         orderRoom: data.orderRoom,
         currentUser: currentUser!,
-      }).catch((e) => alert(e));
+      })
+        .then((value) => alert("メニューを送信しました"))
+        .catch((e) => alert(e));
     }
   };
 

@@ -142,21 +142,6 @@ export const getLocalOrderCarts: (
   );
 };
 
-export const getOrderCartsContainedUnLimitedPlanById: (
-  orderRoomId: string
-) => Promise<OrderCart[]> = async (orderRoomId: string) => {
-  const q = query(
-    collectionRef(),
-    where(isActive, "==", true),
-    where("unLimitedPlanStartAt", "!=", null),
-    where(kOrderRoomId, "==", orderRoomId)
-  );
-
-  return await getDocs(q).then((value) =>
-    value.docs.map((e) => orderCartFromJson(e.data()))
-  );
-};
-
 interface saveOrderCartProps {
   orderRoom: OrderRoom;
   shop: Shop;
@@ -471,13 +456,15 @@ export async function confirmOrderCart({
         .get(orderCartDocRef)
         .then((value) => orderCartFromJson(value.data()!));
 
+      const menu: ShopMenu = searchMenu(menus, orderCart.menuId);
+
       if (orderCart.isDeleted) {
         throw Error(
-          "既に削除されたデータがある為\n送信をストップしました\nメニュー名\n${menu.menuName}"
+          `既に削除されたデータがある為\n送信をストップしました\nメニュー名\n${menu.menuName}`
         );
       } else if (orderCart.orderId != null) {
         throw Error(
-          "既に注文されているデータがある為\n送信をストップしました\nメニュー名\n${menu.menuName}"
+          `既に注文されているデータがある為\n送信をストップしました\nメニュー名\n${menu.menuName}`
         );
       }
 

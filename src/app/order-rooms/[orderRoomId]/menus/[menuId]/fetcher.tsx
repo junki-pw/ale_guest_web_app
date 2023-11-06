@@ -9,10 +9,7 @@ import { getOrderRoomById } from "@/repositories/order_room";
 import { getShopById } from "@/repositories/shop";
 import { getMenuById, getMenus } from "@/repositories/shop_menu";
 import { getOptions } from "@/repositories/menu_option";
-import {
-  getOrderCartById,
-  getOrderCartsContainedUnLimitedPlanById,
-} from "@/repositories/order_cart";
+import { getOrderCartById, getOrderCarts } from "@/repositories/order_cart";
 import { ShopMenu } from "@/domain/shop_menu";
 import { MenuCategory } from "@/domain/menu_category";
 import { MenuOption } from "@/domain/shop_option";
@@ -70,8 +67,11 @@ export const menuDetailsDetailsFetcher: ({
     }
   }
 
-  const unLimitedPlanOrderCarts: OrderCart[] =
-    await getOrderCartsContainedUnLimitedPlanById(orderRoomId);
+  const unLimitedPlanOrderCarts: OrderCart[] = await getOrderCarts(
+    orderRoomId
+  ).then((value) =>
+    value.filter((element) => element.unLimitedPlanStartAt != null)
+  );
 
   return {
     shop: shop,

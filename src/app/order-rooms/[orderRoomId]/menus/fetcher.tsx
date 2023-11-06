@@ -15,10 +15,7 @@ import { getTodayNormalBHs } from "@/repositories/normal_bh";
 import { HolidayBH } from "@/domain/holiday_bh";
 import { getTodayHolidayBHs } from "@/repositories/holiday_bh";
 import { OrderCart } from "@/domain/order_cart";
-import {
-  getOrderCarts,
-  getOrderCartsContainedUnLimitedPlanById,
-} from "@/repositories/order_cart";
+import { getOrderCarts } from "@/repositories/order_cart";
 
 export const menusFetcher: (
   orderRoomId: string
@@ -38,8 +35,10 @@ export const menusFetcher: (
     shop.shopId
   );
   const orderCarts: OrderCart[] = await getOrderCarts(orderRoom.orderRoomId);
-  const unLimitedPlanMenuOrderCarts: OrderCart[] =
-    await getOrderCartsContainedUnLimitedPlanById(orderRoomId);
+
+  const unLimitedPlanMenuOrderCarts: OrderCart[] = [...orderCarts].filter(
+    (element) => element.unLimitedPlanStartAt != null
+  );
 
   return {
     orderRoom: orderRoom,

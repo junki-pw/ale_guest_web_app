@@ -14,6 +14,7 @@ import {
   updateOrderCartUserIds,
 } from "@/repositories/order_cart";
 import { useCurrentUser } from "@/hooks/current_user";
+import { checkThisOrderCartIsApplyUnLimitedPlanProvider } from "@/services/convert/check_this_order_cart_is_apply_un_limited_plan";
 
 interface OrderCartTileProps {
   orderCart: OrderCart;
@@ -63,6 +64,14 @@ export default function OrderCartTile({ data, orderCart }: OrderCartTileProps) {
       .catch((e) => alert(e));
   }
 
+  const isApplyUnLimitedPlan: boolean =
+    checkThisOrderCartIsApplyUnLimitedPlanProvider({
+      orderCart,
+      unLimitedPlanOrderCarts: data.unLimitedMenuOrderCarts,
+      menus: data.menus,
+      currentDateTime: data.currentDateTime,
+    });
+
   return (
     <div>
       <div className="px-4 py-3">
@@ -72,8 +81,14 @@ export default function OrderCartTile({ data, orderCart }: OrderCartTileProps) {
               {orderCart.customMenuName ?? menu.menuName}
             </h1>
             <p className="my-1 text-sm">{optionTexts}</p>
-            <p className="mt-0.5 text-orange-400">
-              ¥ {orderCart.orderedMenuAmount?.toLocaleString()}
+            <p
+              className={`mt-0.5 ${
+                isApplyUnLimitedPlan ? "text-green-500" : "text-orange-400"
+              }`}
+            >
+              {isApplyUnLimitedPlan
+                ? "放題プラン"
+                : `¥ ${orderCart.orderedMenuAmount?.toLocaleString()}`}
             </p>
           </div>
           {menu.menuImageUrl == null ? (

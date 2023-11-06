@@ -1,6 +1,5 @@
 import { HolidayBH } from "@/domain/holiday_bh";
 import { NormalBH } from "@/domain/normal_bh";
-import { Elsie } from "next/font/google";
 
 interface checkIsOpeningProps {
   currentDateTime: Date;

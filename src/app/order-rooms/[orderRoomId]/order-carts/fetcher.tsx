@@ -20,6 +20,9 @@ export const orderCartFetcher: (
   const menus: ShopMenu[] = await getMenus(shop.shopId);
   const options: MenuOption[] = await getOptions(shop.shopId);
   const currentDateTime: Date = await getCurrentDateTime();
+  const unLimitedMenuOrderCarts: OrderCart[] = [...orderCarts].filter(
+    (element) => element.unLimitedPlanStartAt != null
+  );
 
   return {
     shop: shop,
@@ -28,6 +31,6 @@ export const orderCartFetcher: (
     menus: menus,
     options: options,
     currentDateTime: currentDateTime,
-    unLimitedMenuOrderCarts: [],
+    unLimitedMenuOrderCarts: unLimitedMenuOrderCarts,
   };
 };

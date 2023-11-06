@@ -9,6 +9,7 @@ import { MenusState } from "./state";
 import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 import { useEffect } from "react";
 import { MenuCategory } from "@/domain/menu_category";
+import { ShopMenu } from "@/domain/shop_menu";
 
 interface MenusProps {
   params: {
@@ -55,53 +56,69 @@ function _Body({ data, mutate }: BodyProps) {
           (element.categoryIds as any).includes(category.categoryId)
         );
 
-        if (containedIndex == -1) {
-          return <div key={index}></div>;
-        }
+        if (containedIndex != -1) {
+          return (
+            <div key={index}>
+              {/* カテゴリー */}
+              <CategoryTile key={category.categoryId} category={category} />
 
-        return (
-          <div key={index}>
-            {/* カテゴリー */}
-            <CategoryTile key={category.categoryId} category={category} />
-
-            {/* メニュータイル */}
-            {data.menus.map((menu, menuIndex) => {
-              return (
-                <div key={menuIndex}>
-                  <MenuTile
+              {/* メニュータイル */}
+              {data.menus.map((menu, menuIndex) => {
+                return (
+                  <MenuTileWithOrderCart
+                    key={menuIndex}
                     menu={menu}
-                    orderCart={null}
                     category={category}
-                    orderRoomId={data.orderRoom.orderRoomId}
                     data={data}
                   />
-                  {data.orderCarts.map((orderCart, index) => {
-                    if (
-                      orderCart.menuId != menu.menuId ||
-                      orderCart.orderId != null
-                    ) {
-                      return <div key={orderCart.orderCartId}></div>;
-                    }
-
-                    return (
-                      <MenuTile
-                        key={orderCart.orderCartId}
-                        menu={menu}
-                        orderCart={orderCart}
-                        category={category}
-                        orderRoomId={data.orderRoom.orderRoomId}
-                        data={data}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
-        );
+                );
+              })}
+            </div>
+          );
+        }
       })}
 
       <MenusBottomButton data={data} />
     </main>
+  );
+}
+
+type MenuTileWithOrderCartProps = {
+  menu: ShopMenu;
+  category: MenuCategory;
+  data: MenusState;
+};
+
+function MenuTileWithOrderCart({
+  menu,
+  category,
+  data,
+}: MenuTileWithOrderCartProps) {
+  return (
+    <div>
+      <MenuTile
+        menu={menu}
+        orderCart={null}
+        category={category}
+        orderRoomId={data.orderRoom.orderRoomId}
+        data={data}
+      />
+      {data.orderCarts.map((orderCart, index) => {
+        if (orderCart.menuId != menu.menuId || orderCart.orderId != null) {
+          return <div key={orderCart.orderCartId}></div>;
+        }
+
+        return (
+          <MenuTile
+            key={orderCart.orderCartId}
+            menu={menu}
+            orderCart={orderCart}
+            category={category}
+            orderRoomId={data.orderRoom.orderRoomId}
+            data={data}
+          />
+        );
+      })}
+    </div>
   );
 }

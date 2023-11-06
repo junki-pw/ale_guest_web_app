@@ -2,11 +2,12 @@ import { MenuCategory } from "@/domain/menu_category";
 import { OrderCart } from "@/domain/order_cart";
 import { ShopMenu } from "@/domain/shop_menu";
 import { checkThisMenuIsApplyUnLimitedPlan } from "@/services/convert/check_this_menu_is_apply_un_limited_plan";
-import { checkThisOrderCartIsApplyUnLimitedPlanProvider } from "@/services/convert/check_this_order_cart_is_apply_un_limited_plan";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MenusState } from "../state";
 import { convertOptionTexts } from "@/services/convert/option_text";
+import { convertIsReducedTaxRate } from "@/services/convert/string";
+import { calcMenuAmount } from "@/services/calc/menu";
 
 interface OrderCartProps {
   orderCart: OrderCart | null;
@@ -45,7 +46,17 @@ export function MenuTile({
   });
 
   const amount: number =
-    orderCart == null ? menu.price : orderCart.orderedMenuAmount!;
+    orderCart == null
+      ? calcMenuAmount({
+          menu: menu,
+          optionList: data.options,
+          options: {},
+          orderCount: 1,
+          shop: data.shop,
+          isReducedTaxRate: convertIsReducedTaxRate(data.shop),
+          discounts: [],
+        })
+      : orderCart.orderedMenuAmount!;
 
   // 売り切れチェック
   const soldOut: boolean =
@@ -68,12 +79,22 @@ export function MenuTile({
         onClick={handleClicked}
       >
         <div>
-          <h1 className="mb-1.5 font-bold text-base line-clamp-1">
-            {menu.menuName}
-          </h1>
+          {/* メニュー名 */}
+          <div className="flex mb-1.5">
+            {orderCart != null && (
+              <h1 className="flex-none font-bold text-orange-500 mr-1">4 ×</h1>
+            )}
+            <h1 className="font-bold text-base line-clamp-1">
+              {`${orderCart == null ? "" : ""}` + menu.menuName}
+            </h1>
+          </div>
+
+          {/* 説明文 */}
           <h2 className="mb-1.5 text-sm text-gray-500 line-clamp-2">
             {menu.menuDescription}
           </h2>
+
+          {/* 価格・限定数 */}
           <div className="flex">
             <h2
               className={`text-sm ${

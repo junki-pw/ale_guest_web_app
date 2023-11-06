@@ -1,6 +1,8 @@
 import React from "react";
 import { MenuDetailsState } from "../state";
 import { checkThisMenuIsApplyUnLimitedPlan } from "@/services/convert/check_this_menu_is_apply_un_limited_plan";
+import { calcMenuAmount } from "@/services/calc/menu";
+import { convertIsReducedTaxRate } from "@/services/convert/string";
 
 interface MenuDetailsTitleDescPartProps {
   data: MenuDetailsState;
@@ -16,6 +18,16 @@ export default function MenuDetailsTitleDescPart({
     currentDateTime: data.currentDateTime,
   });
 
+  const amount: number = calcMenuAmount({
+    menu: data.menu,
+    optionList: data.options,
+    options: {},
+    orderCount: 1,
+    shop: data.shop,
+    isReducedTaxRate: convertIsReducedTaxRate(data.shop),
+    discounts: [],
+  });
+
   return (
     <div className="px-4">
       <h1 className="font-bold">{data.menu.menuName}</h1>
@@ -29,7 +41,7 @@ export default function MenuDetailsTitleDescPart({
       >
         {isApplyUnLimitedPlan
           ? "放題プラン適用中"
-          : `¥ ${data.menu.price.toLocaleString()}`}
+          : `¥ ${amount.toLocaleString()}`}
       </h2>
     </div>
   );
