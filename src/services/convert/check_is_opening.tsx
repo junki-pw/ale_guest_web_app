@@ -13,9 +13,6 @@ export function checkIsOpening({
   normalBHs,
   holidayBHs,
 }: checkIsOpeningProps): boolean {
-  console.log(normalBHs);
-  console.log(holidayBHs);
-
   /// 先に休日営業の場合を行う（休日営業のデータより優先度が高いから）
   for (const holidayBH of holidayBHs) {
     if (holidayBH.isClosedAllDay) {
@@ -36,12 +33,7 @@ export function checkIsOpening({
     const currentTime: number =
       currentDateTime.getHours() * 60 + currentDateTime.getMinutes();
 
-    console.log(currentTime);
-
     for (const normalBH of normalBHs) {
-      console.log(normalBH.openTime);
-      console.log(normalBH.endTime);
-
       /// openAt < currentDateTime < endAt の場合
       if (normalBH.openTime <= currentTime && currentTime < normalBH.endTime) {
         return true;
