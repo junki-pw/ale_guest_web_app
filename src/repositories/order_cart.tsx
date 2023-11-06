@@ -438,8 +438,14 @@ export async function confirmOrderCart({
     }
 
     const currentDateTime: Date = await getCurrentDateTime();
-    const normalBHs: NormalBH[] = await getTodayNormalBHs(currentDateTime);
-    const holidayBHs: HolidayBH[] = await getTodayHolidayBHs(currentDateTime);
+    const normalBHs: NormalBH[] = await getTodayNormalBHs(
+      currentDateTime,
+      orderRoom.shopId
+    );
+    const holidayBHs: HolidayBH[] = await getTodayHolidayBHs(
+      currentDateTime,
+      latestOrderRoom.shopId
+    );
 
     const isOpen: boolean = checkIsOpening({
       currentDateTime,

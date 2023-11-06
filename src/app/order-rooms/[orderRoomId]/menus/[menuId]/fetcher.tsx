@@ -36,8 +36,14 @@ export const menuDetailsDetailsFetcher: ({
 }: orderRoomDetailsFetcherProps) => {
   const orderRoom = await getOrderRoomById(orderRoomId);
   const currentDateTime: Date = await getCurrentDateTime();
-  const holidaBHs: HolidayBH[] = await getTodayHolidayBHs(currentDateTime);
-  const normalBHs: NormalBH[] = await getTodayNormalBHs(currentDateTime);
+  const holidaBHs: HolidayBH[] = await getTodayHolidayBHs(
+    currentDateTime,
+    orderRoom.shopId
+  );
+  const normalBHs: NormalBH[] = await getTodayNormalBHs(
+    currentDateTime,
+    orderRoom.shopId
+  );
   const shop: Shop = await getShopById(orderRoom.shopId);
   const menus: ShopMenu[] = await getMenus(shop.shopId);
   const categories: MenuCategory[] = await getCategories(shop.shopId);

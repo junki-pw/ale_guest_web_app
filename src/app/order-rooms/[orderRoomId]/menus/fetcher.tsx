@@ -29,8 +29,14 @@ export const menusFetcher: (
   const categories: MenuCategory[] = await getCategories(shop.shopId);
   const options: MenuOption[] = await getOptions(shop.shopId);
   const currentDateTime: Date = await getCurrentDateTime();
-  const normalBHs: NormalBH[] = await getTodayNormalBHs(currentDateTime);
-  const holidayBHs: HolidayBH[] = await getTodayHolidayBHs(currentDateTime);
+  const normalBHs: NormalBH[] = await getTodayNormalBHs(
+    currentDateTime,
+    shop.shopId
+  );
+  const holidayBHs: HolidayBH[] = await getTodayHolidayBHs(
+    currentDateTime,
+    shop.shopId
+  );
   const orderCarts: OrderCart[] = await getOrderCarts(orderRoom.orderRoomId);
   const unLimitedPlanMenuOrderCarts: OrderCart[] =
     await getOrderCartsContainedUnLimitedPlanById(orderRoomId);
