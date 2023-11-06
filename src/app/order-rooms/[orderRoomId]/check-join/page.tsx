@@ -26,15 +26,10 @@ export default function CheckJoinPage(props: CheckJoinPageProps) {
     return <div>error</div>;
   }
 
-  const guestCount =
-    data.orderRoom.menCount +
-    data.orderRoom.womenCount +
-    data.orderRoom.teenCount;
-
   return (
     <main className="relative pt-6">
       {/* ヘッダー */}
-      <CheckJoinHeadPart guestCount={guestCount} data={data} />
+      <CheckJoinHeadPart data={data} />
       <div className="h-6"></div>
 
       {/* 店舗情報 */}

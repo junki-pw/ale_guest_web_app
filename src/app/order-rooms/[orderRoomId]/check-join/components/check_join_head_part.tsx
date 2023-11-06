@@ -3,14 +3,10 @@ import Image from "next/image";
 import { CheckJoinState } from "../state";
 
 interface CheckJoinHeadPartProps {
-  guestCount: number;
   data: CheckJoinState;
 }
 
-export default function CheckJoinHeadPart({
-  guestCount,
-  data,
-}: CheckJoinHeadPartProps) {
+export default function CheckJoinHeadPart({ data }: CheckJoinHeadPartProps) {
   return (
     <nav className="flex flex-col justify-center items-center ">
       <Image
@@ -24,7 +20,8 @@ export default function CheckJoinHeadPart({
         {data.orderRoom.orderRoomName}
       </div>
       <div className="text-xs text-gray-600 text-center font-bold">
-        メンバー {guestCount}・オーダー済み {data.orderRoom.orderCartCount}
+        メンバー {data.orderRoom.userIds.length}・オーダー済み{" "}
+        {data.orderRoom.orderCartCount}
       </div>
     </nav>
   );
