@@ -14,13 +14,17 @@ export default function EditProfileBottom({
 }: EditProfileBottomProps) {
   const router = useRouter();
   async function handleJoinOrderRoom() {
-    await joinOrderRoom({
-      orderRoomId,
-      userIcon: data.selectedImageUrl,
-      userName: data.inputValue,
-    })
-      .then((value) => router.replace("/order-rooms/" + orderRoomId)) // 画面遷移
-      .catch((e) => alert(e)); // エラー処理
+    const m: string = "このプロフィールアイコンと名前で参加しますか？";
+
+    if (confirm(m)) {
+      await joinOrderRoom({
+        orderRoomId,
+        userIcon: data.selectedImageUrl,
+        userName: data.inputValue,
+      })
+        .then((value) => router.replace("/order-rooms/" + orderRoomId))
+        .catch((e) => alert(e));
+    }
   }
 
   return (

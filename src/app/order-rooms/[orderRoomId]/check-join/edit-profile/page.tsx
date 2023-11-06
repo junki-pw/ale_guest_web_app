@@ -27,6 +27,9 @@ export default function EditProfilePage(props: EditProfilePageProps) {
 
   return (
     <main className="relative py-6">
+      <div className="mb-4 font-bold text-xl text-center">
+        プロフィールを設定
+      </div>
       <EditProfileIconsPart data={data} mutate={mutate} />
       <div className="h-8"></div>
       <EditProfileInputPart data={data} mutate={mutate} />

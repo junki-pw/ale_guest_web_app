@@ -43,6 +43,10 @@ export async function joinOrderRoom({
   userIcon,
   userName,
 }: joinOrderRoomProps) {
+  if (userName.length == 0) {
+    throw "ユーザー名を設定して下さい";
+  }
+
   await runTransaction(db, async (t) => {
     const userId = auth.currentUser!.uid;
     const orderRoomDocRef = docRef(orderRoomId);
