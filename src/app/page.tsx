@@ -3,7 +3,7 @@
 export default function Home() {
   return (
     <main>
-      <button>Home Page</button>
+      <button>Home Page Test</button>
     </main>
   );
 }
