@@ -1,12 +1,13 @@
+"use client";
 import { AppUser } from "@/domain/user";
 import { saveOrderCart } from "@/repositories/order_cart";
 import { calcMenuAmount } from "@/services/calc/menu";
 import { checkThisMenuIsApplyUnLimitedPlan } from "@/services/convert/check_this_menu_is_apply_un_limited_plan";
 import { convertIsReducedTaxRate } from "@/services/convert/string";
-import router, { useRouter } from "next/router";
 import React, { MouseEventHandler, useState } from "react";
 import { MenuDetailsState } from "../../state";
 import { useCurrentUser } from "@/hooks/current_user";
+import { useRouter } from "next/navigation";
 
 interface MenuDetailsAddCartButtonProps {
   data: MenuDetailsState;
