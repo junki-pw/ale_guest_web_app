@@ -78,6 +78,7 @@ const _IconTile = ({ iconTileType, data }: _IconTileProps) => {
             shopId: data.orderRoom.shopId,
             seatCommonName: data.seat.seatCommonName,
             currentUser: currentUser!,
+            message: null,
           }).then((value) => alert("店員を呼びました"));
         }
         break;
