@@ -13,17 +13,18 @@ export default function CheckoutMenuOptionTile({
   orderCart,
   data,
 }: _CheckoutMenuOptionTile) {
-  const menu: ShopMenu = searchMenu(data.menus, orderCart.menuId);
+  if (orderCart.orderId == null) {
+    return <div></div>;
+  }
 
+  const menu: ShopMenu = searchMenu(data.menus, orderCart.menuId);
   const optionTexts = convertOptionTexts({ orderCart, menus: data.menus });
 
   return (
     <div className="flex justify-between items-center mb-3">
       <div className="mr-3">
         <h2 className="grow">{menu.menuName}</h2>
-        {optionTexts == null ? (
-          <div></div>
-        ) : (
+        {optionTexts == null && (
           <p className="mt-1 text-xs text-gray-400">{optionTexts}</p>
         )}
       </div>

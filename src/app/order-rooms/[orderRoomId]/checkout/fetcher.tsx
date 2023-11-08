@@ -20,7 +20,6 @@ import { getCurrentDateTime } from "@/repositories/server_timestamp";
 import { streamOrderPaymentsById } from "@/repositories/order_payment";
 import { useEffect, useState } from "react";
 import { KeyedMutator } from "swr";
-import useSWRSubscription from "swr/subscription";
 
 export const checkoutFetcher: (
   orderRoomId: string

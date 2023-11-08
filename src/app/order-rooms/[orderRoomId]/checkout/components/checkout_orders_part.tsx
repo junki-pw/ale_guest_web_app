@@ -69,28 +69,48 @@ export default function CheckoutOrdersPart({ data }: _CheckoutOrdersPart) {
       ))}
 
       {/* 突き出し料金 */}
-      {data.shop.isServeAppetizer ? (
+      {data.shop.isServeAppetizer && (
         <_Tile
           title={data.shop.appetizerName}
           desc={guestCount.toString()}
           amount={appetizerAmount}
+          amountText={null}
+          textColor={null}
         />
-      ) : (
-        <div></div>
       )}
 
       {/* テーブルチャージ */}
-      {data.coverCharge != null ? (
+      {data.coverCharge != null && (
         <_Tile
           title={data.coverCharge!.coverChargeName}
           desc={coverChargeDesc}
           amount={coverChargeAmount}
+          amountText={null}
+          textColor={null}
         />
-      ) : (
-        <div></div>
       )}
 
-      {/* そのうち、割引・割り増しを追加する */}
+      {/* 割引・割り増しを追加する */}
+      {data.orderRoom.corrects.map((correct, index) => {
+        const type: string = correct["type"] ?? "savings";
+        const isSavings = type == "savings";
+        const savings: number = correct["savings"] ?? 0;
+        const percent: number = correct["percent"] ?? 0;
+        const isPlus = isSavings ? savings >= 0 : percent >= 0;
+
+        return (
+          <_Tile
+            key={index}
+            title={isPlus ? "割り増し" : "割引"}
+            desc={""}
+            amount={null}
+            amountText={
+              isSavings ? savings.toLocaleString() : correct["percent"] + "%"
+            }
+            textColor={isPlus ? null : "text-orange-500"}
+          />
+        );
+      })}
 
       <div className="mt-1 mb-2 h-[1px] bg-gray-200 w-full"></div>
       <div className="flex justify-between">
@@ -104,16 +124,20 @@ export default function CheckoutOrdersPart({ data }: _CheckoutOrdersPart) {
 interface _Tile {
   title: string;
   desc: string;
-  amount: number;
+  amount: number | null;
+  amountText: string | null;
+  textColor: string | null;
 }
 
-const _Tile = ({ title, desc, amount }: _Tile) => {
+const _Tile = ({ title, desc, amount, amountText, textColor }: _Tile) => {
   return (
     <div className="mb-3 flex w-full">
-      <p className="grow truncate">
+      <p className={`grow truncate ${textColor == null ? "" : textColor}`}>
         {title} {desc}
       </p>
-      <p className="flex-none">¥ {amount.toLocaleString()}</p>
+      <p className={`flex-none ${textColor == null ? "" : textColor}`}>
+        {amountText ?? "¥" + `${(amount ?? 0).toLocaleString()}`}
+      </p>
     </div>
   );
 };

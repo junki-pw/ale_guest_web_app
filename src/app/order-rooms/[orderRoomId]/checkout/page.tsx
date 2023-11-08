@@ -44,7 +44,10 @@ function _Body({ data, mutate }: _BodyProps) {
 
   return (
     <main className="mb-40 relative">
+      {/* ユーザー */}
       <CheckoutUsersPaymentPart data={data} mutate={mutate} />
+
+      {/* オーダー */}
       <CheckoutOrdersPart data={data} />
       <div className="w-full bg-gray-200 h-[6px]"></div>
 
