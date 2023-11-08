@@ -1,27 +1,26 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import OrderCartTile from "./components/order_cart_tile";
-import useSWR, { KeyedMutator, mutate } from "swr";
+import useSWR from "swr";
 import { orderCartFetcher } from "./fetcher";
-import { useOrderCartHooks } from "./hooks";
 import OrderCartBottom from "./components/order_cart_bottom";
-import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 import { OrderCartState } from "./state";
 import { OrderCart } from "@/domain/order_cart";
+import { useStreamOrderCartsById as useStreamOfOrderCartPage } from "./hooks";
 
 interface OrderCartPageProps {
   params: {
     orderRoomId: string;
   };
 }
+
 export default function OrderCartPage(props: OrderCartPageProps) {
   const orderRoomId = props.params.orderRoomId;
 
-  const { data, isLoading, error, mutate } = useSWR(
+  const { data, isLoading, error } = useSWR(
     `order-rooms/${orderRoomId}/order-carts`,
     () => orderCartFetcher(orderRoomId)
   );
-  const { test } = useOrderCartHooks({ mutate, data });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -29,20 +28,16 @@ export default function OrderCartPage(props: OrderCartPageProps) {
     return <div>Error...</div>;
   }
 
-  return <_Body data={data} mutate={mutate} />;
+  return <_Body data={data} />;
 }
 
 interface _BodyProps {
   data: OrderCartState;
-  mutate: KeyedMutator<OrderCartState>;
 }
 
-function _Body({ data, mutate }: _BodyProps) {
-  useEffect(() => {
-    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
-      mutate({ ...data, orderCarts: orderCarts }, false);
-    });
-  }, []);
+function _Body({ data }: _BodyProps) {
+  // 監視処理
+  useStreamOfOrderCartPage(data.orderRoom.orderRoomId);
 
   const orderCarts: OrderCart[] = [
     ...data.orderCarts.filter((element) => element.createdAt != null),

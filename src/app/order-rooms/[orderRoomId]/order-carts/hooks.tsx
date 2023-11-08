@@ -1,24 +1,16 @@
-import { KeyedMutator } from "swr";
-import { OrderCartState } from "./state";
-import { useEffect, useState } from "react";
+import useSWRSubscription from "swr/subscription";
+import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
+import useSWR from "swr";
 
-interface useOrderCartHooksProps {
-  data: OrderCartState | undefined;
-  mutate: KeyedMutator<OrderCartState>;
-}
+export function useStreamOrderCartsById(orderRoomId: string) {
+  const { data, mutate } = useSWR(`order-rooms/${orderRoomId}/order-carts`);
 
-export const useOrderCartHooks = ({ data, mutate }: useOrderCartHooksProps) => {
-  const [test, setTest] = useState("");
-
-  useEffect(() => {
-    if (data == undefined) {
-      mutate({ ...data! });
+  useSWRSubscription(
+    `/useStreamOrderCartsById/${orderRoomId}`,
+    (key, { next }) => {
+      streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) =>
+        mutate({ ...data, orderCarts }, false)
+      );
     }
-  });
-
-  const increment = () => {
-    mutate({ ...data! });
-  };
-
-  return { test };
-};
+  );
+}
