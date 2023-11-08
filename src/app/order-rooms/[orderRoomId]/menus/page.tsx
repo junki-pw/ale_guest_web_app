@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { MenuCategory } from "@/domain/menu_category";
 import { ShopMenu } from "@/domain/shop_menu";
 import MenusUnLimitedMenuTiles from "./components/un_limited_menu_tiles";
+import MenusCategoryTiles from "./components/category_tiles";
 
 interface MenusProps {
   params: {
@@ -51,7 +52,10 @@ function _Body({ data, mutate }: BodyProps) {
   );
 
   return (
-    <main className="relative pb-40">
+    <main className="relative pb-40 pt-[62px]">
+      {/* カテゴリーs */}
+      <MenusCategoryTiles data={data} />
+
       {/* 放題プラン */}
       <MenusUnLimitedMenuTiles data={data} />
 
@@ -63,7 +67,7 @@ function _Body({ data, mutate }: BodyProps) {
 
         if (containedIndex != -1) {
           return (
-            <div key={index}>
+            <div key={index} id={category.categoryId}>
               {/* カテゴリー */}
               <CategoryTile key={category.categoryId} category={category} />
 
