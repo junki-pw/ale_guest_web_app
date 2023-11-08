@@ -1,3 +1,4 @@
+import MenuDetailsCallStaffDesc from "@/app/order-rooms/[orderRoomId]/menus/[menuId]/components/call_staff_desc";
 import MenuDetailsBottom from "@/app/order-rooms/[orderRoomId]/menus/[menuId]/components/menu_details_bottom";
 import MenuDetailsImagePart from "@/app/order-rooms/[orderRoomId]/menus/[menuId]/components/menu_details_image_part";
 import { MenuDetailsOptionTiles } from "@/app/order-rooms/[orderRoomId]/menus/[menuId]/components/option_tiles";
@@ -15,7 +16,10 @@ export default function MenuDetailsBody({
   mutate,
 }: MenuDetailsBodyProps) {
   return (
-    <main className="relative pt-4 pb-20">
+    <main className="relative min-h-screen h-full pt-4 pb-20">
+      {/* 放題プラン・コース料理の呼び出し説明文 */}
+      <MenuDetailsCallStaffDesc data={data} />
+
       {/* 画像 */}
       <MenuDetailsImagePart data={data} />
 
