@@ -9,6 +9,7 @@ interface CreateCallStaffProps {
   userId: string;
   userName: string;
   userIcon: string;
+  message: string | null;
 }
 
 export function createCallStaff({
@@ -18,6 +19,7 @@ export function createCallStaff({
   userId,
   userName,
   userIcon,
+  message,
 }: CreateCallStaffProps): CallStaff {
   return {
     callStaffId: uuidv4(),
@@ -25,7 +27,7 @@ export function createCallStaff({
     orderRoomId,
     shopId,
     seatCommonName,
-    message: "",
+    message: message ?? "",
     userId,
     userName,
     userIcon,

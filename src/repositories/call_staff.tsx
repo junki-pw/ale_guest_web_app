@@ -10,6 +10,7 @@ interface CallStaffFromOrderRoomProps {
   shopId: string;
   seatCommonName: string;
   currentUser: AppUser;
+  message: string | null;
 }
 
 export async function callStaffFromOrderRoom({
@@ -17,6 +18,7 @@ export async function callStaffFromOrderRoom({
   shopId,
   seatCommonName,
   currentUser,
+  message,
 }: CallStaffFromOrderRoomProps) {
   const callStaff: CallStaff = createCallStaff({
     orderRoomId,
@@ -25,6 +27,7 @@ export async function callStaffFromOrderRoom({
     userId: currentUser.userId,
     userName: currentUser.userName,
     userIcon: currentUser.userIcon,
+    message: message,
   });
 
   await setDoc(doc(db, callStaffsCollection, callStaff.callStaffId), callStaff);
