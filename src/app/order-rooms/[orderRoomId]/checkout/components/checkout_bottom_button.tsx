@@ -5,6 +5,9 @@ import { cancelOrderPayment, sendCheck } from "@/repositories/order_payment";
 import { OrderPayment } from "@/domain/order_payment";
 import { useCheckoutHooks } from "../fetcher";
 import { KeyedMutator } from "swr";
+import { useRouter } from "next/navigation";
+import { OrderRoom } from "@/domain/order_room";
+import { getOrderRoomById } from "@/repositories/order_room";
 
 interface CheckoutBottomButtonProps {
   data: CheckoutState;
@@ -17,6 +20,7 @@ export default function CheckoutBottomButton({
 }: CheckoutBottomButtonProps) {
   const { currentUser } = useCurrentUser();
   const { paymentMap } = useCheckoutHooks({ data, mutate });
+  const router = useRouter();
 
   if (data.orderRoom.hostId != currentUser?.userId) {
     return <div></div>;
@@ -44,9 +48,18 @@ export default function CheckoutBottomButton({
         checkoutType: data.checkoutType,
         currentUser: currentUser!,
       })
-        .then((value) => {
+        .then(async (value) => {
           alert("ユーザー全員にお会計を送信しました");
           mutate();
+
+          // 画面遷移
+          await getOrderRoomById(data.orderRoom.orderRoomId).then((value) => {
+            if (value.orderPaymentId != null) {
+              router.push(
+                `/order-rooms/${data.orderRoom.orderRoomId}/order-payment/${value.orderPaymentId}`
+              );
+            }
+          });
         })
         .catch((e) => alert(e));
     }
