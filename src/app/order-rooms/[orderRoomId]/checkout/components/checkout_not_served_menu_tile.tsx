@@ -14,7 +14,7 @@ export default function CheckoutNotServedMenuTile({
   orderCart,
   data,
 }: CheckoutNotServedMenuTile) {
-  if (orderCart.serveStatus != "served") {
+  if (orderCart.serveStatus == "served") {
     return <div></div>;
   }
 
@@ -30,12 +30,8 @@ export default function CheckoutNotServedMenuTile({
         <h1 className="font-bold">
           {orderCart.customMenuName ?? menu.menuName}
         </h1>
-        {optionTexts == null ? (
-          <div></div>
-        ) : (
-          <p className="mt-1 text-xs text-gray-400">
-            オプション , オプション , オプション , オプション , オプション
-          </p>
+        {optionTexts != null && optionTexts.length != 0 && (
+          <p className="mt-1 text-xs text-gray-400">{optionTexts}</p>
         )}
       </div>
     </Link>
