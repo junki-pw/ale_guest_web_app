@@ -34,12 +34,10 @@ export default function PrimaryChatSenderInfo({
       <div className="grow ml-2">
         <div className="flex mb-1">
           <h1 className="text-xs mr-2">{orderChat.senderName}</h1>
-          {orderChat.senderPosition != null ? (
+          {orderChat.senderPosition != null && (
             <h2 className="text-xs mr-2 text-gray-400">
               {orderChat.senderPosition}
             </h2>
-          ) : (
-            <div></div>
           )}
           <h2 className="text-xs text-gray-400">
             {month}月{day}日 {hour}:{minutes}

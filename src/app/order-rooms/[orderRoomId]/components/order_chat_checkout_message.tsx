@@ -29,9 +29,17 @@ export default function OrderChatCheckoutMessage({
       : (data.checkoutPayersMap as any)[orderPayment?.orderPaymentId] ?? [];
 
   if (orderPayment == null) {
-    return <div>Loading...</div>;
+    return (
+      <PrimaryChatSenderInfo orderChat={orderChat}>
+        <div className="p-1">データを読み取り中...</div>
+      </PrimaryChatSenderInfo>
+    );
   } else if (orderPayment.status == "cancel") {
-    return <div>キャンセルされたお会計のため、表示できません</div>;
+    return (
+      <PrimaryChatSenderInfo orderChat={orderChat}>
+        <div className="p-1">キャンセルされたお会計のため、表示できません</div>
+      </PrimaryChatSenderInfo>
+    );
   }
 
   const handleGoToOrderPaymentPage = (goToStatus: boolean) => {

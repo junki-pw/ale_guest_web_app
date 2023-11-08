@@ -20,7 +20,11 @@ export default function OrderChatOrderPaymentMessage({
       : (data.payerMap as any)[orderChat.orderPaymentId];
 
   if (payer == null) {
-    return <div className="p-1">データを読み取り中...</div>;
+    return (
+      <PrimaryChatSenderInfo orderChat={orderChat}>
+        <div className="p-1">データを読み取り中...</div>
+      </PrimaryChatSenderInfo>
+    );
   }
 
   const handleGoToPaymentStatusPage = () => {
@@ -37,8 +41,9 @@ export default function OrderChatOrderPaymentMessage({
   return (
     <PrimaryChatSenderInfo orderChat={orderChat}>
       <div className="flex flex-col items-start">
+        {/* お会計タイル */}
         <button
-          className="bg-orange-500 px-4 py-3 rounded-lg w-min"
+          className="bg-orange-500 px-4 py-3 rounded-lg"
           onClick={handleGoToOrderPaymentDetailsPage}
         >
           <div className="text-white">
@@ -52,6 +57,8 @@ export default function OrderChatOrderPaymentMessage({
           </div>
         </button>
         <div className="h-1"></div>
+
+        {/* 各ユーザーのお会計情報はこちら */}
         <button
           className="p-3 bg-orange-500 rounded-lg text-white text-xs"
           onClick={handleGoToPaymentStatusPage}
