@@ -10,6 +10,7 @@ import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
 import { useEffect } from "react";
 import { MenuCategory } from "@/domain/menu_category";
 import { ShopMenu } from "@/domain/shop_menu";
+import MenusUnLimitedMenuTiles from "./components/un_limited_menu_tiles";
 
 interface MenusProps {
   params: {
@@ -51,6 +52,10 @@ function _Body({ data, mutate }: BodyProps) {
 
   return (
     <main className="relative pb-40">
+      {/* 放題プラン */}
+      <MenusUnLimitedMenuTiles data={data} />
+
+      {/* カテゴリー・メニュー表 */}
       {categories.map((category, index) => {
         const containedIndex = data.menus.findIndex((element) =>
           (element.categoryIds as any).includes(category.categoryId)
