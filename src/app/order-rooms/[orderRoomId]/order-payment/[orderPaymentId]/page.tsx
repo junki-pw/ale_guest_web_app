@@ -3,6 +3,11 @@
 import BottomMakeButton from "./components/bottom_make_button";
 import useSWR from "swr";
 import { orderPaymentFetcher } from "./fetcher";
+import Image from "next/image";
+import cancelImage from "../../../../../../public/cancel.png";
+import checkCircleOutline from "../../../../../../public/check-circle-outline.png";
+import OrderPaymentCancelView from "./components/cancel";
+import OrderPaymentCompletedView from "./components/completed";
 
 interface OrderPaymentArgs {
   params: {
@@ -20,8 +25,14 @@ export default function OrderPaymentPage({
 
   if (isLoading) {
     return <div>Loading...</div>;
-  } else if (error) {
+  } else if (error || data == undefined) {
     return <div>Error が発生しました</div>;
+  }
+
+  if (data.payer.status == "cancel") {
+    return <OrderPaymentCancelView />;
+  } else if (data.payer.status != "request") {
+    return <OrderPaymentCompletedView data={data} />;
   }
 
   return (
