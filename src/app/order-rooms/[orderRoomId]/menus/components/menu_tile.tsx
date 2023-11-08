@@ -8,6 +8,7 @@ import { MenusState } from "../state";
 import { convertOptionTexts } from "@/services/convert/option_text";
 import { convertIsReducedTaxRate } from "@/services/convert/string";
 import { calcMenuAmount } from "@/services/calc/menu";
+import { checkIsServiceAvailable } from "@/services/convert/check_is_service_available";
 
 interface OrderCartProps {
   orderCart: OrderCart | null;
@@ -70,6 +71,11 @@ export function MenuTile({
           menus: data.menus,
         });
 
+  const isServe = checkIsServiceAvailable({
+    category,
+    currentDateTime: data.currentDateTime,
+  });
+
   return (
     <li className="list-none">
       <button
@@ -94,7 +100,7 @@ export function MenuTile({
             {menu.menuDescription}
           </h2>
 
-          {/* 価格・限定数 */}
+          {/* 価格・限定数・提供時間外チェック */}
           <div className="flex">
             <h2
               className={`text-sm ${
@@ -110,6 +116,11 @@ export function MenuTile({
                 {soldOut
                   ? "売り切れ"
                   : `残り{menu.defaultMenuCount - menu.todayOrderedCount}個`}
+              </h1>
+            )}
+            {!isServe && (
+              <h1 className="text-sm ml-3 font-bold text-gray-500">
+                提供時間外
               </h1>
             )}
           </div>
