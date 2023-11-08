@@ -79,7 +79,9 @@ const _IconTile = ({ iconTileType, data }: _IconTileProps) => {
             seatCommonName: data.seat.seatCommonName,
             currentUser: currentUser!,
             message: null,
-          }).then((value) => alert("店員を呼びました"));
+          })
+            .then((value) => alert("店員を呼びました"))
+            .catch((e) => alert(e));
         }
         break;
       default:

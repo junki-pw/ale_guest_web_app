@@ -30,7 +30,9 @@ export default function MenuDetailsCallStaffButton({
         seatCommonName: seat.seatCommonName,
         currentUser: currentUser!,
         message: data.menu.menuCommonName + "についてのご相談",
-      }).then((value) => alert("近くのスタッフを呼びました"));
+      })
+        .then((value) => alert("近くのスタッフを呼びました"))
+        .catch((e) => alert(e));
     }
   }
 
