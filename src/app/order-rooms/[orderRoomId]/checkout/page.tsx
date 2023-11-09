@@ -4,12 +4,11 @@ import useSWR, { KeyedMutator } from "swr";
 import CheckoutBottomButton from "./components/checkout_bottom_button";
 import CheckoutNotServedMenuTile from "./components/checkout_not_served_menu_tile";
 import CheckoutUsersPaymentPart from "./components/checkout_users_payment_part";
-import { checkoutFetcher, useCheckoutHooks } from "./fetcher";
-import { useEffect } from "react";
+import { checkoutFetcher } from "./fetcher";
 import { CheckoutState } from "./state";
 import CheckoutOrdersPart from "./components/checkout_orders_part";
-import { streamOrderCartsByOrderRoomId } from "@/repositories/order_cart";
-import { runTransaction } from "firebase/firestore";
+import { useCheckoutHooks } from "./hooks";
+import { useEffect } from "react";
 
 interface CheckoutProps {
   params: {
@@ -30,7 +29,6 @@ export default function CheckoutPage(props: CheckoutProps) {
     return <div>Error...</div>;
   }
 
-  // return Body({ data, mutate });
   return <_Body data={data} mutate={mutate} />;
 }
 
@@ -40,7 +38,13 @@ interface _BodyProps {
 }
 
 function _Body({ data, mutate }: _BodyProps) {
-  useCheckoutHooks({ data, mutate });
+  const { orderCarts, orderPaymentMap } = useCheckoutHooks(
+    data.orderRoom.orderRoomId
+  );
+
+  useEffect(() => {
+    mutate({ ...data, orderCarts, paymentMap: orderPaymentMap }, false);
+  }, [orderCarts, orderPaymentMap]);
 
   return (
     <main className="mb-40 relative">

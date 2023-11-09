@@ -12,6 +12,7 @@ import { MenuCategory } from "@/domain/menu_category";
 import { ShopMenu } from "@/domain/shop_menu";
 import MenusUnLimitedMenuTiles from "./components/un_limited_menu_tiles";
 import MenusCategoryTiles from "./components/category_tiles";
+import { useMenusHooks } from "./hooks";
 
 interface MenusProps {
   params: {
@@ -41,11 +42,11 @@ interface BodyProps {
 }
 
 function _Body({ data, mutate }: BodyProps) {
+  const { orderCarts } = useMenusHooks(data.orderRoom.orderRoomId);
+
   useEffect(() => {
-    streamOrderCartsByOrderRoomId(data.orderRoom.orderRoomId, (orderCarts) => {
-      mutate({ ...data, orderCarts: orderCarts }, false);
-    });
-  }, []);
+    mutate({ ...data, orderCarts }, false);
+  }, [orderCarts]);
 
   const categories: MenuCategory[] = [...data.categories].sort(
     (a, b) => a.categoryIndex - b.categoryIndex
