@@ -1,10 +1,9 @@
 import {
   desc,
-  kOrderRoomId,
   orderChatsCollection,
   orderRoomsCollection,
 } from "@/constants/firebase";
-import { isDeleted, updatedAt } from "@/constants/keys";
+import { updatedAt } from "@/constants/keys";
 import { OrderChat, orderChatFromJson } from "@/domain/order_chat";
 import { db } from "@/providers/firebase";
 import {
@@ -19,7 +18,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  where,
 } from "firebase/firestore";
 
 const collectionRef = (orderRoomId: string) =>
@@ -80,7 +78,7 @@ export async function streamOrderChats(
     onSnapshot(query, async (snapshot) => {
       console.log("オーダーチャットが更新されました");
       const orderChats: OrderChat[] = await getLocalOrderChats(orderRoomId);
-      return onNext(orderChats);
+      onNext(orderChats);
     })
   );
 }

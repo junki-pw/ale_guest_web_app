@@ -12,3 +12,9 @@ export interface OrderRoomState {
   payerMap: {};
   checkoutPayersMap: {};
 }
+
+export interface orderPaymentData {
+  orderPaymentMap: {};
+  payerMap: {};
+  checkoutPayersMap: {};
+}

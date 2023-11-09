@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import OrderChatJoinTile from "./components/order_chat_join_tile";
 import { OrderChat } from "@/domain/order_chat";
@@ -8,13 +7,13 @@ import OrderChatCheckoutMessage from "./components/order_chat_checkout_message";
 import OrderChatOrderPaymentMessage from "./components/order_chat_order_payment_message";
 import { v4 as uuidv4 } from "uuid";
 import useSWR, { KeyedMutator } from "swr";
-import { orderRoomFetcher, useOrderRoomHooks } from "./fetcher";
+import { orderRoomFetcher } from "./fetcher";
 import { OrderRoomState } from "./state";
 import CheckJoinPage from "./check-join/page";
 import { order_room_closed, user_not_joined } from "@/constants/error";
-import { useEffect } from "react";
 import OrderRoomBottom from "./components/order_room_bottom";
-import { streamOrderChats } from "@/repositories/order_chat";
+import { scrollBottom, useOrderRoomHooks } from "./hooks";
+import { useEffect } from "react";
 
 interface OrderRoomPageProps {
   params: {
@@ -25,7 +24,7 @@ interface OrderRoomPageProps {
 export default function OrderRoomPage(props: OrderRoomPageProps) {
   const orderRoomId = props.params.orderRoomId;
   const { data, error, isLoading, mutate } = useSWR<OrderRoomState>(
-    `order_room/${orderRoomId}`,
+    `order-rooms/${orderRoomId}`,
     () => orderRoomFetcher(orderRoomId)
   );
 
@@ -57,17 +56,21 @@ interface BodyProps {
 }
 
 function Body({ data, mutate }: BodyProps) {
-  useOrderRoomHooks(data, mutate);
+  // 監視処理
+  const { orderChats, orderPaymentData } = useOrderRoomHooks(
+    data.orderRoom.orderRoomId
+  );
 
   useEffect(() => {
-    console.log("新しい useEffect が参照されました");
-  }, [data.orderChats]);
+    mutate({ ...data, ...orderPaymentData, orderChats }, false);
+    scrollBottom();
+  }, [orderPaymentData, orderChats]);
 
   return (
     <main className="relative h-full mt-6">
       <div className="grow flex flex-col-reverse">
-        {data!.orderChats.map((event) => (
-          <ChatTiles key={uuidv4()} orderChat={event} data={data} />
+        {orderChats.map((orderChat) => (
+          <ChatTiles key={uuidv4()} orderChat={orderChat} data={data} />
         ))}
       </div>
       <div className="h-[87.5px]"></div>
