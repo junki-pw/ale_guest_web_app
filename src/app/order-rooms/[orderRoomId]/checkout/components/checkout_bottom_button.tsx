@@ -3,11 +3,11 @@ import { CheckoutState } from "../state";
 import { useCurrentUser } from "@/hooks/current_user";
 import { cancelOrderPayment, sendCheck } from "@/repositories/order_payment";
 import { OrderPayment } from "@/domain/order_payment";
-import { useCheckoutHooks } from "../fetcher";
 import { KeyedMutator } from "swr";
 import { useRouter } from "next/navigation";
 import { OrderRoom } from "@/domain/order_room";
 import { getOrderRoomById } from "@/repositories/order_room";
+import { useCheckoutHooks } from "../hooks";
 
 interface CheckoutBottomButtonProps {
   data: CheckoutState;
@@ -19,7 +19,7 @@ export default function CheckoutBottomButton({
   mutate,
 }: CheckoutBottomButtonProps) {
   const { currentUser } = useCurrentUser();
-  const { paymentMap } = useCheckoutHooks({ data, mutate });
+  const { orderPaymentMap } = useCheckoutHooks(data.orderRoom.orderRoomId);
   const router = useRouter();
 
   if (data.orderRoom.hostId != currentUser?.userId) {
@@ -29,7 +29,7 @@ export default function CheckoutBottomButton({
   const latestOrderPayment: OrderPayment | null =
     data.orderRoom.orderPaymentId == null
       ? null
-      : (paymentMap as any)[data.orderRoom.orderPaymentId];
+      : (orderPaymentMap as any)[data.orderRoom.orderPaymentId];
 
   const isHavingOrderPayment: boolean = latestOrderPayment != null;
 
